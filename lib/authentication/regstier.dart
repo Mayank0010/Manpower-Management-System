@@ -10,6 +10,8 @@ class MyRegister extends StatefulWidget {
 }
 
 class _MyRegisterState extends State<MyRegister> {
+  bool isObscure = true;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -127,7 +129,7 @@ class _MyRegisterState extends State<MyRegister> {
                           ),
                           TextField(
                             style: TextStyle(color: Colors.white),
-                            obscureText: true,
+                            obscureText: isObscure,
                             decoration: InputDecoration(
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
@@ -145,9 +147,19 @@ class _MyRegisterState extends State<MyRegister> {
                                 hintStyle: TextStyle(color: Colors.white),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
-                                )),
+                                ),
+                              suffixIcon: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      isObscure = !isObscure;
+                                    });
+                                  },
+                                  icon: Icon(
+                                      isObscure ?
+                                      Icons.visibility_off : Icons.visibility
+                                  )),
                           ),
-
+                          ),
                           SizedBox(
                             height: 40,
                           ),

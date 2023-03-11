@@ -11,6 +11,8 @@ class EmployeeRegister extends StatefulWidget {
 }
 
 class _EmployeeRegisterState extends State<EmployeeRegister> {
+  bool isObscure = true;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -128,7 +130,7 @@ class _EmployeeRegisterState extends State<EmployeeRegister> {
                           ),
                           TextField(
                             style: TextStyle(color: Colors.white),
-                            obscureText: true,
+                            obscureText: isObscure,
                             decoration: InputDecoration(
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
@@ -146,9 +148,19 @@ class _EmployeeRegisterState extends State<EmployeeRegister> {
                                 hintStyle: TextStyle(color: Colors.white),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
-                                )),
+                                ),
+                              suffixIcon: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      isObscure = !isObscure;
+                                    });
+                                  },
+                                  icon: Icon(
+                                      isObscure ?
+                                      Icons.visibility_off : Icons.visibility
+                                  )),
                           ),
-
+                          ),
                           SizedBox(
                             height: 40,
                           ),

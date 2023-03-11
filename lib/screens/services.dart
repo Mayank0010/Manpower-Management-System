@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:manpower_management_app/screens/service_page.dart';
 
 class service extends StatefulWidget {
   @override
@@ -106,7 +107,9 @@ class _serviceState extends State<service> {
               Expanded(
                 child: ElevatedButton.icon(
                   onPressed: () {
-
+                    Navigator.push(context, MaterialPageRoute(builder:
+                        (context) => ServicesPage()
+                    ));
                   },
                   icon: Icon(Icons.add, color: Colors.white,),
                   label: Text('Add', style: TextStyle(color: Colors.white),),

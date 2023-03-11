@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:manpower_management_app/authentication/admin_register.dart';
 
 class AccountsPage extends StatelessWidget {
   final String name;
@@ -48,6 +49,9 @@ class AccountsPage extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () {
                       // Navigate to register new admin page
+                      Navigator.push(context, MaterialPageRoute(builder:
+                          (context) => AdminRegister()
+                      ));
                     },
                     child: Text('Register New Admin', style: TextStyle(color: Colors.white)),
                   ),

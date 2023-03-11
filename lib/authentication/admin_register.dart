@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:manpower_management_app/authentication/admin_login.dart';
 import 'package:manpower_management_app/authentication/login.dart';
+import 'package:manpower_management_app/screens/admin_dashboard.dart';
 import 'package:manpower_management_app/screens/admin_home.dart';
 import 'package:manpower_management_app/screens/home_screen.dart';
 
@@ -12,6 +13,8 @@ class AdminRegister extends StatefulWidget {
 }
 
 class _AdminRegisterState extends State<AdminRegister> {
+  bool isObscure = true;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -29,7 +32,7 @@ class _AdminRegisterState extends State<AdminRegister> {
           leading: IconButton(icon:Icon(Icons.arrow_back),
             onPressed: (){
               Navigator.pushReplacement(context, MaterialPageRoute(builder:
-                  (context) => HomeScreen()
+                  (context) => AdminDashboard()
               ));
             },
           ),
@@ -129,7 +132,7 @@ class _AdminRegisterState extends State<AdminRegister> {
                           ),
                           TextField(
                             style: TextStyle(color: Colors.white),
-                            obscureText: true,
+                            obscureText: isObscure,
                             decoration: InputDecoration(
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
@@ -147,9 +150,19 @@ class _AdminRegisterState extends State<AdminRegister> {
                                 hintStyle: TextStyle(color: Colors.white),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
-                                )),
+                                ),
+                              suffixIcon: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      isObscure = !isObscure;
+                                    });
+                                  },
+                                  icon: Icon(
+                                      isObscure ?
+                                      Icons.visibility_off : Icons.visibility
+                                  )),
                           ),
-
+                          ),
                           SizedBox(
                             height: 40,
                           ),
