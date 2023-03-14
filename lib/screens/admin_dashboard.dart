@@ -9,8 +9,22 @@ import 'package:manpower_management_app/screens/services.dart';
 import 'package:manpower_management_app/screens/worker_verification.dart';
 
 
-class AdminDashboard extends StatelessWidget {
+class AdminDashboard extends StatefulWidget {
   const AdminDashboard({Key? key}) : super(key: key);
+
+  @override
+  State<AdminDashboard> createState() => _AdminDashboardState();
+}
+
+class _AdminDashboardState extends State<AdminDashboard> {
+
+  int _currentIndex = 0;
+  void onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +38,11 @@ class AdminDashboard extends StatelessWidget {
           IconButton(onPressed: () {
             showSearch(context: context, delegate: CustomSearchDelegate());
           },
-              icon: const Icon(Icons.search, color: Colors.white,))
+              icon: const Icon(Icons.search, color: Colors.white,)),
+          IconButton(
+            icon: Icon(Icons.notifications, color: Colors.white,),
+            onPressed: () {},
+          ),
         ],
         leading: Builder(
           builder: (BuildContext context) {
@@ -70,7 +88,7 @@ class AdminDashboard extends StatelessWidget {
                   Icons.account_box,
                   size: 22,
                 ),
-                title: const Text('Account'),
+                title: const Text('Account', style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Roboto'),),
                 onTap: () {
                   // Update the state of the app
                   // Then close the drawer
@@ -85,7 +103,7 @@ class AdminDashboard extends StatelessWidget {
                   Icons.production_quantity_limits,
                   size: 22,
                 ),
-                title: const Text('Products'),
+                title: const Text('Products', style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Roboto'),),
                 onTap: () {
                   // Update the state of the app
                   // Then close the drawer
@@ -100,7 +118,7 @@ class AdminDashboard extends StatelessWidget {
                   Icons.home_repair_service,
                   size: 22,
                 ),
-                title: const Text('Services'),
+                title: const Text('Services', style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Roboto'),),
                 onTap: () {
                   // Update the state of the app
                   // Then close the drawer
@@ -114,7 +132,7 @@ class AdminDashboard extends StatelessWidget {
                   Icons.room_service,
                   size: 22,
                 ),
-                title: const Text('Orders'),
+                title: const Text('Orders', style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Roboto'),),
                 onTap: () {
                   // Update the state of the app
                   // Then close the drawer
@@ -128,7 +146,7 @@ class AdminDashboard extends StatelessWidget {
                   Icons.verified,
                   size: 22,
                 ),
-                title: const Text('Worker Verification'),
+                title: const Text('Worker Verification', style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Roboto'),),
                 onTap: () {
                   // Update the state of the app
                   // Then close the drawer
@@ -142,7 +160,7 @@ class AdminDashboard extends StatelessWidget {
                   Icons.payment,
                   size: 22,
                 ),
-                title: const Text('Payment History'),
+                title: const Text('Payment History', style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Roboto'),),
                 onTap: () {
                   // Update the state of the app
                   // Then close the drawer
@@ -153,10 +171,22 @@ class AdminDashboard extends StatelessWidget {
               ),
               ListTile(
                 leading: Icon(
+                  Icons.settings,
+                  size: 22,
+                ),
+                title: const Text('Settings', style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Roboto'),),
+                onTap: () {
+                  // Update the state of the app
+                  // Then close the drawer
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: Icon(
                   Icons.logout,
                   size: 22,
                 ),
-                title: const Text('Logout'),
+                title: const Text('Logout', style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Roboto'),),
                 onTap: () {
                   // Update the state of the app
                   // Then close the drawer
@@ -236,12 +266,39 @@ class AdminDashboard extends StatelessWidget {
           ],
         ),
       ),
+
+      bottomNavigationBar: BottomNavigationBar(
+        fixedColor: Colors.white,
+        backgroundColor: Color(0xffFBA013),
+        type: BottomNavigationBarType.fixed,
+        onTap: onTabTapped,
+        currentIndex: _currentIndex,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_circle),
+            label: 'Profile',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Services',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_cart),
+            label: 'Products',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.receipt),
+            label: 'Orders',
+          ),
+        ],
+      ),
+
     );
   }
 
   Widget _buildCard({required String title, required String value}) {
     return Card(
-      color: Colors.orangeAccent,
+      color: Color(0xffFBA013),
       child: Padding(
         padding: EdgeInsets.all(16),
         child: Column(
@@ -267,10 +324,10 @@ class AdminDashboard extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
           return Container(
-            color: Colors.deepOrangeAccent,
+            color: Colors.white60,
             margin: EdgeInsets.only(right: 16),
             child: Card(
-              color: Colors.orangeAccent,
+              color: Color(0xffFBA013),
               child: Padding(
                 padding: EdgeInsets.all(16),
                 child: Text(items[index], style: TextStyle(color: Colors.white)),

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "432556051158",
+    "project_id": "manpower-management-10019",
+    "storage_bucket": "manpower-management-10019.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:432556051158:android:de24b6c05e1d93498e9777",
+        "android_client_info": {
+          "package_name": "com.example.manpower_management"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "432556051158-olbos31bqmeuq22bkekf39ta3i8qpvlj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-M2QZ3rWo4AGZk8z32ek-9hbgpdnaiVU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "432556051158-olbos31bqmeuq22bkekf39ta3i8qpvlj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

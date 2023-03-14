@@ -58,7 +58,8 @@ class _AdminRegisterState extends State<AdminRegister> {
                       margin: EdgeInsets.only(left: 35, right: 35),
                       child: Column(
                         children: [
-                          TextField(
+                          SizedBox(height: 5.0,),
+                          TextFormField(
                             style: TextStyle(color: Colors.white),
                             decoration: InputDecoration(
                                 enabledBorder: OutlineInputBorder(
@@ -73,16 +74,22 @@ class _AdminRegisterState extends State<AdminRegister> {
                                     color: Colors.black,
                                   ),
                                 ),
-                                hintText: "Name",
+                                labelText: "Name",
                                 hintStyle: TextStyle(color: Colors.white),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 )),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter name';
+                              }
+                              return null;
+                            },
                           ),
                           SizedBox(
                             height: 30,
                           ),
-                          TextField(
+                          TextFormField(
                             style: TextStyle(color: Colors.white),
                             decoration: InputDecoration(
                                 enabledBorder: OutlineInputBorder(
@@ -97,16 +104,22 @@ class _AdminRegisterState extends State<AdminRegister> {
                                     color: Colors.black,
                                   ),
                                 ),
-                                hintText: "Email",
+                                labelText: "Email",
                                 hintStyle: TextStyle(color: Colors.white),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 )),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter email';
+                              }
+                              return null;
+                            },
                           ),
                           SizedBox(
                             height: 30,
                           ),
-                          TextField(
+                          TextFormField(
                             style: TextStyle(color: Colors.white),
                             decoration: InputDecoration(
                                 enabledBorder: OutlineInputBorder(
@@ -121,16 +134,52 @@ class _AdminRegisterState extends State<AdminRegister> {
                                     color: Colors.black,
                                   ),
                                 ),
-                                hintText: "Mobile Number",
+                                labelText: "Mobile Number",
                                 hintStyle: TextStyle(color: Colors.white),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 )),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter mobile number';
+                              }
+                              return null;
+                            },
                           ),
                           SizedBox(
                             height: 30,
                           ),
-                          TextField(
+                          TextFormField(
+                            style: TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                labelText: "Role",
+                                hintStyle: TextStyle(color: Colors.white),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                )),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter role';
+                              }
+                              return null;
+                            },
+                          ),
+                          SizedBox(
+                            height: 30,
+                          ),
+                          TextFormField(
                             style: TextStyle(color: Colors.white),
                             obscureText: isObscure,
                             decoration: InputDecoration(
@@ -146,7 +195,7 @@ class _AdminRegisterState extends State<AdminRegister> {
                                     color: Colors.black,
                                   ),
                                 ),
-                                hintText: "Password",
+                                labelText: "Password",
                                 hintStyle: TextStyle(color: Colors.white),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
@@ -162,6 +211,12 @@ class _AdminRegisterState extends State<AdminRegister> {
                                       Icons.visibility_off : Icons.visibility
                                   )),
                           ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter password';
+                              }
+                              return null;
+                            },
                           ),
                           SizedBox(
                             height: 40,
@@ -193,38 +248,6 @@ class _AdminRegisterState extends State<AdminRegister> {
                               )
                             ],
                           ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                child: Text('Already have an account?', style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500,
-                                ),),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pushReplacement(context, MaterialPageRoute(builder:
-                                      (context) => AdminLogin()
-                                  ));
-                                },
-
-                                child: Text(
-                                  'Sign In',
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                      decoration: TextDecoration.underline,
-                                      color: Colors.grey,
-                                      fontSize: 18),
-                                ),
-                                style: ButtonStyle(),
-                              ),
-                            ],
-                          )
                         ],
                       ),
                     )

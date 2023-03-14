@@ -3,6 +3,7 @@ import 'package:http/http.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:manpower_management_app/authentication/admin_register.dart';
 import 'package:manpower_management_app/screens/admin_dashboard.dart';
 import 'package:manpower_management_app/screens/admin_home.dart';
 import 'package:manpower_management_app/screens/home_screen.dart';
@@ -65,29 +66,35 @@ class _AdminLoginState extends State<AdminLogin> {
                       margin: EdgeInsets.only(left: 35, right: 35),
                       child: Column(
                         children: [
-                          TextField(
+                          TextFormField(
                             controller: emailController,
                             style: TextStyle(color: Colors.black),
                             decoration: InputDecoration(
                                 fillColor: Colors.grey.shade100,
                                 filled: true,
-                                hintText: "Email",
+                                labelText: "Email",
                                 prefixIcon: IconButton(
                                     onPressed: () {}, icon: Icon(Icons.email)),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 )),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter email';
+                              }
+                              return null;
+                            },
                           ),
                           SizedBox(
                             height: 20,
                           ),
-                          TextField(
+                          TextFormField(
                             controller: passwordController,
                             obscureText: isObscure,
                             decoration: InputDecoration(
                                 fillColor: Colors.grey.shade100,
                                 filled: true,
-                                hintText: "Password",
+                                labelText: "Password",
                                 suffixIcon: IconButton(
                                   onPressed: () {
                                     setState(() {
@@ -104,13 +111,19 @@ class _AdminLoginState extends State<AdminLogin> {
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 )),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter password';
+                              }
+                              return null;
+                            },
                           ),
                           SizedBox(
                             height: 15,
                           ),
                           Row(
                             children: [
-                              SizedBox(width: 200.0,),
+                              SizedBox(width: 180.0,),
                               InkWell(
                                 onTap: () {
                                   Navigator.push(context, MaterialPageRoute(builder:
@@ -152,6 +165,29 @@ class _AdminLoginState extends State<AdminLogin> {
                                   },
                                 ),
                               )
+                            ],
+                          ),
+                          SizedBox(height: 10.0,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Dont have an account?', style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.w600, fontSize: 20),),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.push(context, MaterialPageRoute(builder:
+                                      (context) => AdminRegister()
+                                  ));
+                                },
+                                child: Text(
+                                  'Sign Up',
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                      decoration: TextDecoration.underline,
+                                      color: Colors.blueGrey,
+                                      fontSize: 20),
+                                ),
+                                style: ButtonStyle(),
+                              ),
                             ],
                           ),
                         ],

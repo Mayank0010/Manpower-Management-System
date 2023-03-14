@@ -56,8 +56,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    SizedBox(width: 280.0,),
-                    ElevatedButton(onPressed: () {},
+                    SizedBox(width: 250.0,),
+                    OutlinedButton(onPressed: () {},
                         child: Text('Continue', style: TextStyle(color: Colors.white),),
                       autofocus: true,
                     )

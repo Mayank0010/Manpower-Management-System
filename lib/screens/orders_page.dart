@@ -7,21 +7,27 @@ class Orders extends StatelessWidget {
       'price': '59.99',
       'services': 'Car wash, oil change',
       'products': 'Engine oil, air filter',
-      'discount': '10% off'
+      'discount': '10% off',
+      'customer' : 'Alice',
+      'worker' : 'Bob',
     },
     {
       'date': '2022-03-07',
       'price': '34.99',
       'services': 'Haircut',
       'products': '',
-      'discount': ''
+      'discount': '',
+      'customer' : 'Alice',
+      'worker' : 'Bob',
     },
     {
       'date': '2022-03-06',
       'price': '129.99',
       'services': 'Massage, facial',
       'products': '',
-      'discount': '20% off'
+      'discount': '20% off',
+      'customer' : 'Alice',
+      'worker' : 'Bob',
     },
   ];
 
@@ -45,6 +51,8 @@ class Orders extends StatelessWidget {
                   Text('Date: ${orders[index]['date']}'),
                   Text('Products: ${orders[index]['products']}'),
                   Text('Discount: ${orders[index]['discount']}'),
+                  Text('Customer: ${orders[index]['customer']}'),
+                  Text('Worker: ${orders[index]['worker']}'),
                 ],
               ),
             ),
