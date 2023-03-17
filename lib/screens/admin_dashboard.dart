@@ -1,5 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:manpower_management_app/authentication/admin_login.dart';
 import 'package:manpower_management_app/screens/accounts_page.dart';
+import 'package:manpower_management_app/screens/available_workers.dart';
+import 'package:manpower_management_app/screens/customers.dart';
 import 'package:manpower_management_app/screens/orders_page.dart';
 import 'package:manpower_management_app/screens/payment_history.dart';
 import 'package:manpower_management_app/screens/product-page.dart';
@@ -94,7 +98,35 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   // Then close the drawer
                   Navigator.push(context, MaterialPageRoute(builder:
                   //(context) => AdminRegister()
-                      (context) => AccountsPage(name: 'John Doe', email: 'johndoe@example.com', password: 'password123')
+                      (context) => AccountsPage()
+                  ));
+                },
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.account_box_rounded,
+                  size: 22,
+                ),
+                title: const Text('Workers', style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Roboto'),),
+                onTap: () {
+                  // Update the state of the app
+                  // Then close the drawer
+                  Navigator.push(context, MaterialPageRoute(builder:
+                      (context) => AvailableWorkersWidget()
+                  ));
+                },
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.account_circle,
+                  size: 22,
+                ),
+                title: const Text('Customers', style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Roboto'),),
+                onTap: () {
+                  // Update the state of the app
+                  // Then close the drawer
+                  Navigator.push(context, MaterialPageRoute(builder:
+                      (context) => CustomerDetails()
                   ));
                 },
               ),
@@ -190,7 +222,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 onTap: () {
                   // Update the state of the app
                   // Then close the drawer
-                  Navigator.pop(context);
+                  FirebaseAuth.instance.signOut();
                 },
               ),
             ],

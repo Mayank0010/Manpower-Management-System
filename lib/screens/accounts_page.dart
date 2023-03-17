@@ -1,12 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:manpower_management_app/authentication/admin_register.dart';
 
 class AccountsPage extends StatelessWidget {
-  final String name;
-  final String email;
-  final String password;
-
-  AccountsPage({required this.name, required this.email, required this.password});
+  final user = FirebaseAuth.instance.currentUser!;
 
   @override
   Widget build(BuildContext context) {
@@ -20,17 +17,22 @@ class AccountsPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Name: $name',
+              user.uid!,
               style: TextStyle(fontSize: 20.0),
             ),
             SizedBox(height: 10.0),
             Text(
-              'Email: $email',
+              user.email!,
               style: TextStyle(fontSize: 20.0),
             ),
             SizedBox(height: 10.0),
             Text(
               'Password: **********',
+              style: TextStyle(fontSize: 20.0),
+            ),
+            SizedBox(height: 10.0),
+            Text(
+              'Mobile No.: ',
               style: TextStyle(fontSize: 20.0),
             ),
             SizedBox(height: 20.0),

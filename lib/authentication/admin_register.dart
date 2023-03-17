@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:manpower_management_app/authentication/admin_login.dart';
 import 'package:manpower_management_app/authentication/login.dart';
@@ -13,6 +14,12 @@ class AdminRegister extends StatefulWidget {
 }
 
 class _AdminRegisterState extends State<AdminRegister> {
+  var nameController = TextEditingController();
+  var emailController = TextEditingController();
+  var mobileController = TextEditingController();
+  var roleController = TextEditingController();
+  var passwordController = TextEditingController();
+
   bool isObscure = true;
 
   @override
@@ -31,9 +38,11 @@ class _AdminRegisterState extends State<AdminRegister> {
           backgroundColor: Colors.transparent,
           leading: IconButton(icon:Icon(Icons.arrow_back),
             onPressed: (){
-              Navigator.pushReplacement(context, MaterialPageRoute(builder:
+            /*
+              Navigator.push(context, MaterialPageRoute(builder:
                   (context) => AdminDashboard()
               ));
+             */
             },
           ),
           elevation: 0,
@@ -60,6 +69,7 @@ class _AdminRegisterState extends State<AdminRegister> {
                         children: [
                           SizedBox(height: 5.0,),
                           TextFormField(
+                            controller: nameController,
                             style: TextStyle(color: Colors.white),
                             decoration: InputDecoration(
                                 enabledBorder: OutlineInputBorder(
@@ -90,6 +100,7 @@ class _AdminRegisterState extends State<AdminRegister> {
                             height: 30,
                           ),
                           TextFormField(
+                            controller: emailController,
                             style: TextStyle(color: Colors.white),
                             decoration: InputDecoration(
                                 enabledBorder: OutlineInputBorder(
@@ -120,6 +131,7 @@ class _AdminRegisterState extends State<AdminRegister> {
                             height: 30,
                           ),
                           TextFormField(
+                            controller: mobileController,
                             style: TextStyle(color: Colors.white),
                             decoration: InputDecoration(
                                 enabledBorder: OutlineInputBorder(
@@ -150,6 +162,7 @@ class _AdminRegisterState extends State<AdminRegister> {
                             height: 30,
                           ),
                           TextFormField(
+                            controller: roleController,
                             style: TextStyle(color: Colors.white),
                             decoration: InputDecoration(
                                 enabledBorder: OutlineInputBorder(
@@ -180,6 +193,7 @@ class _AdminRegisterState extends State<AdminRegister> {
                             height: 30,
                           ),
                           TextFormField(
+                            controller: passwordController,
                             style: TextStyle(color: Colors.white),
                             obscureText: isObscure,
                             decoration: InputDecoration(
@@ -243,7 +257,9 @@ class _AdminRegisterState extends State<AdminRegister> {
                                           color: Colors.white,
                                           fontSize: 20,
                                           fontStyle: FontStyle.normal)),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    signup();
+                                  },
                                 ),
                               )
                             ],
@@ -259,5 +275,30 @@ class _AdminRegisterState extends State<AdminRegister> {
         ),
       ),
     );
+  }
+
+  Future signup() async {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => Center(child: CircularProgressIndicator(),)
+    );
+
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailController.text.trim(),
+          password: passwordController.text.trim()
+      ).then((value) {
+        Navigator.push(context, MaterialPageRoute(builder:
+            (context) => AdminDashboard()
+        ));
+      });
+    } on FirebaseAuthException catch(e) {
+      if(emailController.text.isEmpty || passwordController.text.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Enter your email or password!!')));
+        Navigator.pop(context);
+      }
+    }
   }
 }

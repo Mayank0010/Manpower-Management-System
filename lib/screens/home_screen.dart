@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:manpower_management_app/authentication/admin_login.dart';
 import 'package:manpower_management_app/authentication/admin_register.dart';
+import 'package:manpower_management_app/authentication/auth.dart';
 import 'package:manpower_management_app/authentication/employee_signup.dart';
 import 'package:manpower_management_app/authentication/regstier.dart';
 import 'package:manpower_management_app/authentication/login.dart';
@@ -34,7 +35,7 @@ class HomeScreen extends StatelessWidget {
                       onPressed: (){
                         Navigator.push(context, MaterialPageRoute(builder:
                             //(context) => AdminRegister()
-                            (context) => AdminLogin()
+                            (context) => Auth()
                         ));
                       },
                       style: OutlinedButton.styleFrom(

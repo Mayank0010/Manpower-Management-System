@@ -1,14 +1,17 @@
 import 'dart:io';
+import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:manpower_management_app/authentication/admin_register.dart';
+import 'package:manpower_management_app/main.dart';
 import 'package:manpower_management_app/screens/admin_dashboard.dart';
 import 'package:manpower_management_app/screens/admin_home.dart';
 import 'package:manpower_management_app/screens/home_screen.dart';
 import 'package:manpower_management_app/services/forgot_password.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AdminLogin extends StatefulWidget {
   const AdminLogin({Key? key}) : super(key: key);
@@ -123,7 +126,7 @@ class _AdminLoginState extends State<AdminLogin> {
                           ),
                           Row(
                             children: [
-                              SizedBox(width: 180.0,),
+                              SizedBox(width: 190.0,),
                               InkWell(
                                 onTap: () {
                                   Navigator.push(context, MaterialPageRoute(builder:
@@ -202,6 +205,8 @@ class _AdminLoginState extends State<AdminLogin> {
       ),
     );
   }
+
+  /*
   Future<void> login() async {
     if(passwordController.text.isNotEmpty && emailController.text.isNotEmpty) {
       Response response = await post(
@@ -218,6 +223,43 @@ class _AdminLoginState extends State<AdminLogin> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Blank Field Not Allowed.")));
     }
+  }
+   */
+
+  Future login() async {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => Center(child: CircularProgressIndicator(),)
+    );
+
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailController.text.trim(),
+          password: passwordController.text.trim()
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Admin logged in!!')));
+      Navigator.pop(context);
+
+    } on FirebaseAuthException catch(e) {
+      if(e.code == 'user-not-found') {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('No user found with this email!!')));
+        Navigator.pop(context);
+      } else if(e.code == 'wrong-password') {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Password did not match!!')));
+        Navigator.pop(context);
+      } else if(emailController.text.isEmpty || passwordController.text.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Enter your email or password!!')));
+        Navigator.pop(context);
+      }
+    }
+
+    //navigatorKey.currentState!.popUntil((route) => route.isFirst);
   }
 }
 

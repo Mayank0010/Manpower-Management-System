@@ -1,6 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class ProductsPage extends StatelessWidget {
+class ProductsPage extends StatefulWidget {
+  @override
+  State<ProductsPage> createState() => _ProductsPageState();
+}
+
+class _ProductsPageState extends State<ProductsPage> {
+
+  var nameController = TextEditingController();
+  var priceController = TextEditingController();
+  var imageController = TextEditingController();
+  var descController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,6 +34,7 @@ class ProductsPage extends StatelessWidget {
                   ),
                   SizedBox(height: 26.0),
                   TextFormField(
+                    controller: nameController,
                     decoration: InputDecoration(
                       labelText: 'Product Name',
                       border: OutlineInputBorder(),
@@ -35,6 +48,7 @@ class ProductsPage extends StatelessWidget {
                   ),
                   SizedBox(height: 26.0),
                   TextFormField(
+                    controller: priceController,
                     decoration: InputDecoration(
                       labelText: 'Price',
                       border: OutlineInputBorder(),
@@ -49,6 +63,7 @@ class ProductsPage extends StatelessWidget {
                   ),
                   SizedBox(height: 26.0),
                   TextFormField(
+                    controller: imageController,
                     decoration: InputDecoration(
                       labelText: 'Image URL',
                       border: OutlineInputBorder(),
@@ -62,6 +77,7 @@ class ProductsPage extends StatelessWidget {
                   ),
                  SizedBox(height: 26.0),
                   TextFormField(
+                    controller: descController,
                     decoration: InputDecoration(
                       labelText: 'Description',
                       border: OutlineInputBorder(),
@@ -78,6 +94,12 @@ class ProductsPage extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {
                       // Add product logic here
+                      FirebaseFirestore.instance.collection('products').add({
+                        'name': nameController.text,
+                        'price': priceController.text,
+                        'image': imageController.text,
+                        'description': descController.text,
+                      });
                     },
                     child: Text('Add Product', style: TextStyle(color: Colors.white)),
                   ),
