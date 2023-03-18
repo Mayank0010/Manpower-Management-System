@@ -7,7 +7,6 @@ class ServicesPage extends StatefulWidget {
 }
 
 class _ServicesPageState extends State<ServicesPage> {
-
   var nameController = TextEditingController();
   var priceController = TextEditingController();
   var imageController = TextEditingController();
@@ -49,6 +48,7 @@ class _ServicesPageState extends State<ServicesPage> {
                   SizedBox(height: 26.0),
                   TextFormField(
                     controller: priceController,
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       labelText: 'Price',
                       border: OutlineInputBorder(),
@@ -59,7 +59,6 @@ class _ServicesPageState extends State<ServicesPage> {
                       }
                       return null;
                     },
-                    keyboardType: TextInputType.number,
                   ),
                   SizedBox(height: 26.0),
                   TextFormField(
@@ -94,12 +93,25 @@ class _ServicesPageState extends State<ServicesPage> {
                   ElevatedButton(
                     onPressed: () {
                       // Add product logic here
-                      FirebaseFirestore.instance.collection('products').add({
-                        'name': nameController.text,
-                        'price': priceController.text,
-                        'image': imageController.text,
-                        'description': descController.text,
-                      });
+                      try {
+                        FirebaseFirestore.instance.collection('services').add({
+                          'name': nameController.text,
+                          'price': priceController.text,
+                          'image': imageController.text,
+                          'description': descController.text,
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Service added successfully')),
+                        );
+                        nameController.clear();
+                        priceController.clear();
+                        imageController.clear();
+                        descController.clear();
+                      } catch (error) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Failed to add service')),
+                        );
+                      }
                     },
                     child: Text('Add Service', style: TextStyle(color: Colors.white)),
                   ),

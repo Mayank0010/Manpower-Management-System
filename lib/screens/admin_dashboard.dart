@@ -300,26 +300,26 @@ class _AdminDashboardState extends State<AdminDashboard> {
       ),
 
       bottomNavigationBar: BottomNavigationBar(
-        fixedColor: Colors.white,
-        backgroundColor: Color(0xffFBA013),
+        fixedColor: Colors.amber,
+        backgroundColor: Colors.white,
         type: BottomNavigationBarType.fixed,
         onTap: onTabTapped,
         currentIndex: _currentIndex,
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
+            icon: Icon(Icons.account_circle, color: Colors.orangeAccent,),
             label: 'Profile',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.home, color: Colors.orangeAccent,),
             label: 'Services',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
+            icon: Icon(Icons.shopping_cart, color: Colors.orangeAccent,),
             label: 'Products',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.receipt),
+            icon: Icon(Icons.receipt, color: Colors.orangeAccent,),
             label: 'Orders',
           ),
         ],

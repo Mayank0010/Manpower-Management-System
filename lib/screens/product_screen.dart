@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:manpower_management_app/screens/product_page.dart';
+import 'package:manpower_management_app/screens/service_page.dart';
+import 'package:manpower_management_app/screens/update_product_page.dart';
 
 class ProductScreen extends StatelessWidget {
 
@@ -18,7 +21,7 @@ class ProductScreen extends StatelessWidget {
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.white,
-                hintText: 'Search for product...',
+                hintText: 'Search for services...',
                 suffixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12.0),
@@ -41,28 +44,11 @@ class ProductScreen extends StatelessWidget {
                     child: ElevatedButton.icon(
                       onPressed: () {
                         Navigator.push(context, MaterialPageRoute(builder:
-                        //(context) => AdminRegister()
                             (context) => ProductsPage()
                         ));
                       },
                       icon: Icon(Icons.add, color: Colors.white,),
                       label: Text('Add', style: TextStyle(color: Colors.white),),
-                    ),
-                  ),
-                  SizedBox(width: 4.0),
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () {},
-                      icon: Icon(Icons.edit, color: Colors.white),
-                      label: Text('Update', style: TextStyle(color: Colors.white),),
-                    ),
-                  ),
-                  SizedBox(width: 4.0),
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () {},
-                      icon: Icon(Icons.delete, color: Colors.white),
-                      label: Text('Delete', style: TextStyle(color: Colors.white),),
                     ),
                   ),
                 ],
@@ -73,34 +59,85 @@ class ProductScreen extends StatelessWidget {
             height: 16.0,
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: 10,
-              itemBuilder: (BuildContext context, int index) {
-                return Card(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 8.0,
-                  ),
-                  child: Column(
-                    children: [
-                      AspectRatio(
-                        aspectRatio: 16 / 9,
-                        child: Image.network(
-                          'https://picsum.photos/200',
-                          fit: BoxFit.cover,
+            child: StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance.collection('products').snapshots(),
+              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (!snapshot.hasData) {
+                  return Center(child: CircularProgressIndicator());
+                }
+
+                final services = snapshot.data!.docs;
+                return ListView.builder(
+                  itemCount: services.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final service = services[index];
+                    final name = service['name'];
+                    final price = service['price'];
+                    final image = service['image'];
+                    final description = service['description'];
+                    final reference = service.reference;
+
+                    return GestureDetector(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Update or Delete Product'),
+                              content: Text('What would you like to do with this product?'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    Navigator.push(context, MaterialPageRoute(builder:
+                                        (context) => UpdateProductPage(
+                                          name: name,
+                                          price: price,
+                                          image: image,
+                                          description: description,
+                                          reference: reference,
+                                        )
+                                    ));
+                                  },
+                                  child: Text('Update'),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    await reference.delete();
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text('Delete'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      child: Card(
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 8.0,
+                        ),
+                        child: Column(
+                          children: [
+                            AspectRatio(
+                              aspectRatio: 16 / 9,
+                              child: Image.network(
+                                image,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.shopping_basket),
+                              title: Text(name),
+                              subtitle: Text(description),
+                              trailing: Text(price),
+                            ),
+                          ],
                         ),
                       ),
-                      ListTile(
-                        leading: Icon(Icons.shopping_basket),
-                        title: Text('Product $index'),
-                        subtitle: Text('Product description'),
-                        trailing: IconButton(
-                          onPressed: () {},
-                          icon: Icon(Icons.delete),
-                        ),
-                      ),
-                    ],
-                  ),
+                    );
+                  },
                 );
               },
             ),
@@ -111,21 +148,9 @@ class ProductScreen extends StatelessWidget {
   }
 }
 
+
 class CustomSearchDelegate extends SearchDelegate{
-  List<String> searchTerms = [
-    'product',
-    'service',
-    'user',
-    'employee',
-    'order',
-    'verification',
-    'payment',
-    'history',
-    'worker',
-    'customer',
-    'home',
-    'cleaning'
-  ];
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -138,27 +163,31 @@ class CustomSearchDelegate extends SearchDelegate{
 
   @override
   Widget buildLeading(BuildContext context) {
-    return
-      IconButton(onPressed: () {
-        close(context, null);
-      }, icon: const Icon(Icons.arrow_back));
+    return IconButton(onPressed: () {
+      close(context, null);
+    }, icon: const Icon(Icons.arrow_back));
   }
 
   @override
   Widget buildResults(BuildContext context) {
-    List<String> matchQuery = [];
-    for(var item in searchTerms) {
-      if(item.toLowerCase().contains(query.toLowerCase())) {
-        matchQuery.add(item);
-      }
-    }
-
-    return ListView.builder(
-      itemCount: matchQuery.length,
-      itemBuilder: (context, index) {
-        var result = matchQuery[index];
-        return ListTile(
-          title: Text(result),
+    return StreamBuilder<QuerySnapshot>(
+      stream: _firestore.collection('products').where('name', isGreaterThanOrEqualTo: query).where('name', isLessThan: query + 'z').snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        final results = snapshot.data!.docs;
+        return ListView.builder(
+          itemCount: results.length,
+          itemBuilder: (context, index) {
+            final result = results[index];
+            return ListTile(
+              title: Text(result['name']),
+              onTap: () {
+                // do something when the result is tapped
+              },
+            );
+          },
         );
       },
     );
@@ -166,19 +195,25 @@ class CustomSearchDelegate extends SearchDelegate{
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    List<String> matchQuery = [];
-    for(var item in searchTerms) {
-      if(item.toLowerCase().contains(query.toLowerCase())) {
-        matchQuery.add(item);
-      }
-    }
-
-    return ListView.builder(
-      itemCount: matchQuery.length,
-      itemBuilder: (context, index) {
-        var result = matchQuery[index];
-        return ListTile(
-          title: Text(result),
+    return StreamBuilder<QuerySnapshot>(
+      stream: _firestore.collection('products').where('name', isGreaterThanOrEqualTo: query).where('name', isLessThan: query + 'z').snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        final results = snapshot.data!.docs;
+        return ListView.builder(
+          itemCount: results.length,
+          itemBuilder: (context, index) {
+            final result = results[index];
+            return ListTile(
+              title: Text(result['name']),
+              onTap: () {
+                query = result['name'];
+                showResults(context);
+              },
+            );
+          },
         );
       },
     );

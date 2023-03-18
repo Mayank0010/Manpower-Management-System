@@ -1,9 +1,41 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:manpower_management_app/authentication/admin_register.dart';
 
-class AccountsPage extends StatelessWidget {
-  final user = FirebaseAuth.instance.currentUser!;
+class AccountsPage extends StatefulWidget {
+  @override
+  State<AccountsPage> createState() => _AccountsPageState();
+}
+
+class _AccountsPageState extends State<AccountsPage> {
+  final User? _user = FirebaseAuth.instance.currentUser;
+
+  String? _name;
+  String? _phoneNumber;
+  String? _role;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData();
+  }
+
+  void _fetchUserData() async {
+    final userData = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(_user?.uid)
+        .get();
+
+    if (userData.exists) {
+      setState(() {
+        _name = userData.get('name');
+        _phoneNumber = userData.get('mobile');
+        _role = userData.get('role');
+      });
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -17,22 +49,22 @@ class AccountsPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              user.uid!,
+              'Name: $_name',
               style: TextStyle(fontSize: 20.0),
             ),
             SizedBox(height: 10.0),
             Text(
-              user.email!,
+              'Email: ${_user?.email ?? ""}',
               style: TextStyle(fontSize: 20.0),
             ),
             SizedBox(height: 10.0),
             Text(
-              'Password: **********',
+              'Phone Number: $_phoneNumber',
               style: TextStyle(fontSize: 20.0),
             ),
             SizedBox(height: 10.0),
             Text(
-              'Mobile No.: ',
+              'Role: $_role',
               style: TextStyle(fontSize: 20.0),
             ),
             SizedBox(height: 20.0),

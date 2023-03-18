@@ -49,6 +49,7 @@ class _ProductsPageState extends State<ProductsPage> {
                   SizedBox(height: 26.0),
                   TextFormField(
                     controller: priceController,
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       labelText: 'Price',
                       border: OutlineInputBorder(),
@@ -59,7 +60,6 @@ class _ProductsPageState extends State<ProductsPage> {
                       }
                       return null;
                     },
-                    keyboardType: TextInputType.number,
                   ),
                   SizedBox(height: 26.0),
                   TextFormField(
@@ -94,12 +94,25 @@ class _ProductsPageState extends State<ProductsPage> {
                   ElevatedButton(
                     onPressed: () {
                       // Add product logic here
-                      FirebaseFirestore.instance.collection('products').add({
-                        'name': nameController.text,
-                        'price': priceController.text,
-                        'image': imageController.text,
-                        'description': descController.text,
-                      });
+                      try {
+                        FirebaseFirestore.instance.collection('products').add({
+                          'name': nameController.text,
+                          'price': priceController.text,
+                          'image': imageController.text,
+                          'description': descController.text,
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Product added successfully')),
+                        );
+                        nameController.clear();
+                        priceController.clear();
+                        imageController.clear();
+                        descController.clear();
+                      } catch (error) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Failed to add product')),
+                        );
+                      }
                     },
                     child: Text('Add Product', style: TextStyle(color: Colors.white)),
                   ),

@@ -132,6 +132,7 @@ class _AdminRegisterState extends State<AdminRegister> {
                           ),
                           TextFormField(
                             controller: mobileController,
+                            keyboardType: TextInputType.number,
                             style: TextStyle(color: Colors.white),
                             decoration: InputDecoration(
                                 enabledBorder: OutlineInputBorder(
