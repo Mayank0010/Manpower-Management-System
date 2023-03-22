@@ -1,10 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:manpower_management_app/authentication/admin_login.dart';
-import 'package:manpower_management_app/authentication/login.dart';
 import 'package:manpower_management_app/screens/admin_dashboard.dart';
-import 'package:manpower_management_app/screens/admin_home.dart';
 import 'package:manpower_management_app/screens/home_screen.dart';
+import 'package:manpower_management_app/services/admin_form.dart';
 
 class AdminRegister extends StatefulWidget {
   const AdminRegister({Key? key}) : super(key: key);
@@ -14,10 +12,7 @@ class AdminRegister extends StatefulWidget {
 }
 
 class _AdminRegisterState extends State<AdminRegister> {
-  var nameController = TextEditingController();
   var emailController = TextEditingController();
-  var mobileController = TextEditingController();
-  var roleController = TextEditingController();
   var passwordController = TextEditingController();
 
   bool isObscure = true;
@@ -38,11 +33,9 @@ class _AdminRegisterState extends State<AdminRegister> {
           backgroundColor: Colors.transparent,
           leading: IconButton(icon:Icon(Icons.arrow_back),
             onPressed: (){
-            /*
               Navigator.push(context, MaterialPageRoute(builder:
-                  (context) => AdminDashboard()
+                  (context) => HomeScreen()
               ));
-             */
             },
           ),
           elevation: 0,
@@ -69,37 +62,6 @@ class _AdminRegisterState extends State<AdminRegister> {
                         children: [
                           SizedBox(height: 5.0,),
                           TextFormField(
-                            controller: nameController,
-                            style: TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                labelText: "Name",
-                                hintStyle: TextStyle(color: Colors.white),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                )),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter name';
-                              }
-                              return null;
-                            },
-                          ),
-                          SizedBox(
-                            height: 30,
-                          ),
-                          TextFormField(
                             controller: emailController,
                             style: TextStyle(color: Colors.white),
                             decoration: InputDecoration(
@@ -112,7 +74,7 @@ class _AdminRegisterState extends State<AdminRegister> {
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                   borderSide: BorderSide(
-                                    color: Colors.black,
+                                    color: Colors.white,
                                   ),
                                 ),
                                 labelText: "Email",
@@ -123,69 +85,6 @@ class _AdminRegisterState extends State<AdminRegister> {
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter email';
-                              }
-                              return null;
-                            },
-                          ),
-                          SizedBox(
-                            height: 30,
-                          ),
-                          TextFormField(
-                            controller: mobileController,
-                            keyboardType: TextInputType.number,
-                            style: TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                labelText: "Mobile Number",
-                                hintStyle: TextStyle(color: Colors.white),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                )),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter mobile number';
-                              }
-                              return null;
-                            },
-                          ),
-                          SizedBox(
-                            height: 30,
-                          ),
-                          TextFormField(
-                            controller: roleController,
-                            style: TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                labelText: "Role",
-                                hintStyle: TextStyle(color: Colors.white),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                )),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter role';
                               }
                               return null;
                             },
@@ -207,7 +106,7 @@ class _AdminRegisterState extends State<AdminRegister> {
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                   borderSide: BorderSide(
-                                    color: Colors.black,
+                                    color: Colors.white,
                                   ),
                                 ),
                                 labelText: "Password",

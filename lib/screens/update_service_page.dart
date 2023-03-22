@@ -40,7 +40,7 @@ class _UpdateServicePageState extends State<UpdateServicePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Update Product'),
+        title: Text('Update Service'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -114,7 +114,7 @@ class _UpdateServicePageState extends State<UpdateServicePage> {
                     Navigator.pop(context);
                   }
                 },
-                child: Text('Update Product'),
+                child: Text('Update Service'),
               ),
             ],
           ),

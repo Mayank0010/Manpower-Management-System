@@ -1,96 +1,146 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:manpower_management_app/authentication/admin_register.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AccountsPage extends StatefulWidget {
   @override
-  State<AccountsPage> createState() => _AccountsPageState();
+  _AccountsPageState createState() => _AccountsPageState();
 }
 
 class _AccountsPageState extends State<AccountsPage> {
-  final User? _user = FirebaseAuth.instance.currentUser;
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _mobileController = TextEditingController();
+  final TextEditingController _roleController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
 
-  String? _name;
-  String? _phoneNumber;
-  String? _role;
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
+  late CollectionReference _adminDetailsRef = _db.collection('admin_details');
 
-  @override
-  void initState() {
-    super.initState();
-    _fetchUserData();
-  }
+  void _submitForm() async {
+    // Retrieve the current user's email from the Firebase Authentication instance.
+    String? userEmail = FirebaseAuth.instance.currentUser?.email;
 
-  void _fetchUserData() async {
-    final userData = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(_user?.uid)
-        .get();
+    // Check if the current user's email is already in the database.
+    QuerySnapshot querySnapshot = await _adminDetailsRef.where('email', isEqualTo: userEmail).get();
 
-    if (userData.exists) {
-      setState(() {
-        _name = userData.get('name');
-        _phoneNumber = userData.get('mobile');
-        _role = userData.get('role');
+    if (querySnapshot.docs.isNotEmpty) {
+      // Display an error message if the current user already exists in the database.
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Admin account already exists for this user.')),
+      );
+    } else if (_nameController.text.isNotEmpty) {
+      // Add a new record if the current user does not exist in the database.
+      await _adminDetailsRef.add({
+        'name': _nameController.text,
+        'email': _emailController.text,
+        'mobile': _mobileController.text,
+        'role': _roleController.text,
+        'address': _addressController.text,
       });
+      _nameController.clear();
+      _emailController.clear();
+      _mobileController.clear();
+      _roleController.clear();
+      _addressController.clear();
     }
   }
 
+
+  void _updateAdmin(String id) async {
+    await _adminDetailsRef.doc(id).update({
+      'name': _nameController.text,
+      'email': _emailController.text,
+      'mobile': _mobileController.text,
+      'role': _roleController.text,
+      'address': _addressController.text,
+    });
+    _nameController.clear();
+    _emailController.clear();
+    _mobileController.clear();
+    _roleController.clear();
+    _addressController.clear();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Accounts'),
+        title: Text('Admin Accounts'),
       ),
       body: Container(
-        padding: EdgeInsets.all(20.0),
+        padding: EdgeInsets.all(10.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              'Name: $_name',
-              style: TextStyle(fontSize: 20.0),
+            TextFormField(
+              controller: _nameController,
+              decoration: InputDecoration(labelText: 'Name'),
             ),
-            SizedBox(height: 10.0),
-            Text(
-              'Email: ${_user?.email ?? ""}',
-              style: TextStyle(fontSize: 20.0),
+            SizedBox(height: 6.0),
+            TextFormField(
+              controller: _emailController,
+              decoration: InputDecoration(labelText: 'Email'),
             ),
-            SizedBox(height: 10.0),
-            Text(
-              'Phone Number: $_phoneNumber',
-              style: TextStyle(fontSize: 20.0),
+            SizedBox(height: 6.0),
+            TextFormField(
+              controller: _mobileController,
+              decoration: InputDecoration(labelText: 'Mobile'),
             ),
-            SizedBox(height: 10.0),
-            Text(
-              'Role: $_role',
-              style: TextStyle(fontSize: 20.0),
+            SizedBox(height: 6.0),
+            TextFormField(
+              controller: _roleController,
+              decoration: InputDecoration(labelText: 'Role'),
             ),
-            SizedBox(height: 20.0),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Navigate to update details page
-                    },
-                    child: Text('Update Details', style: TextStyle(color: Colors.white)),
-                  ),
-                ),
-                SizedBox(width: 4.0,),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Navigate to register new admin page
-                      Navigator.push(context, MaterialPageRoute(builder:
-                          (context) => AdminRegister()
-                      ));
-                    },
-                    child: Text('Register New Admin', style: TextStyle(color: Colors.white)),
-                  ),
-                ),
-              ],
+            SizedBox(height: 6.0),
+            TextFormField(
+              controller: _addressController,
+              decoration: InputDecoration(labelText: 'Address'),
+            ),
+            SizedBox(height: 6.0),
+            ElevatedButton(
+              child: Text('Add'),
+              onPressed: () {
+                _submitForm();
+              },
+            ),
+            SizedBox(height: 16.0),
+            Text(
+              'Admin Details',
+              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 16.0),
+            StreamBuilder<QuerySnapshot>(
+              stream: _adminDetailsRef.snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  final adminDocs = snapshot.data!.docs;
+                  return Expanded(
+                    child: ListView.builder(
+                      itemCount: adminDocs.length,
+                      itemBuilder: (context, index) {
+                        var admin = adminDocs[index];
+                        return ListTile(
+                          title: Text(admin['name']),
+                          subtitle: Text(admin['email']),
+                          trailing: IconButton(
+                              icon: Icon(Icons.edit),
+                              onPressed: () {
+                                _nameController.text = admin['name'];
+                                _emailController.text = admin['email'];
+                                _mobileController.text = admin['mobile'];
+                                _roleController.text = admin['role'];
+                                _addressController.text = admin['address'];
+                              }),
+
+                        );
+                      },
+                    ),
+                  );
+                } else {
+                  return CircularProgressIndicator();
+                }
+              },
             ),
           ],
         ),

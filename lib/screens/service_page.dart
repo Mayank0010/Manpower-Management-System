@@ -107,6 +107,7 @@ class _ServicesPageState extends State<ServicesPage> {
                         priceController.clear();
                         imageController.clear();
                         descController.clear();
+
                       } catch (error) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Failed to add service')),

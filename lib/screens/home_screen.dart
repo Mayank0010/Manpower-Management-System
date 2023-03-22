@@ -21,7 +21,7 @@ class HomeScreen extends StatelessWidget {
                 end: Alignment.bottomCenter,
                 colors: [Color(0xffF89669), Color(0xff91EBFF)])
         ),
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -47,51 +47,9 @@ class HomeScreen extends StatelessWidget {
                         side: BorderSide(color: Colors.black26),
                         padding: EdgeInsets.symmetric(vertical: 10)
                       ),
-                      child: Text('Admin Login', style: TextStyle(color: Colors.white),)
+                      child: Text('Login', style: TextStyle(color: Colors.white),)
                   ),
                 ),
-                SizedBox(width: 10,),
-                Expanded(
-                  child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder:
-                        (context) => MyRegister()
-                    ));
-                    },
-
-                      style: OutlinedButton.styleFrom(
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                              borderRadius:
-                              BorderRadius.circular(15)),
-                          foregroundColor: Colors.white,
-                          backgroundColor: Colors.blue,
-                          side: BorderSide(color: Colors.black26),
-                          padding: EdgeInsets.symmetric(vertical: 10)
-                      ),
-                      child: Text('User SignUp')
-                  ),
-                ),
-                SizedBox(width: 10,),
-                Expanded(
-                  child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder:
-                            (context) => EmployeeRegister()
-                        ));
-                      },
-                      style: OutlinedButton.styleFrom(
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15)),
-                          foregroundColor: Colors.white,
-                          backgroundColor: Colors.blue,
-                          side: BorderSide(color: Colors.black26),
-                          padding: EdgeInsets.symmetric(vertical: 10)
-                      ),
-                      child: Text('Worker SignUp')
-                  ),
-                )
               ],
             )
           ],
