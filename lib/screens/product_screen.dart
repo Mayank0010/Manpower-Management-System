@@ -16,7 +16,7 @@ class ProductScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(14.0),
             child: TextField(
               decoration: InputDecoration(
                 filled: true,
@@ -33,10 +33,10 @@ class ProductScreen extends StatelessWidget {
               },
             ),
           ),
-          SizedBox(height: 16.0),
+          SizedBox(height: 10.0),
           SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 14.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -185,6 +185,7 @@ class CustomSearchDelegate extends SearchDelegate{
               title: Text(result['name']),
               onTap: () {
                 // do something when the result is tapped
+                //showResults(context);
               },
             );
           },

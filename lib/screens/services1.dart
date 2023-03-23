@@ -1,10 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:manpower_management_app/screens/product_page.dart';
-import 'package:manpower_management_app/screens/service_page.dart';
 import 'package:manpower_management_app/screens/update_service_page.dart';
 
-class service extends StatelessWidget {
+class service1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -34,30 +32,6 @@ class service extends StatelessWidget {
             ),
           ),
           SizedBox(height: 10.0),
-          SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder:
-                            (context) => ServicesPage()
-                        ));
-                      },
-                      icon: Icon(Icons.add, color: Colors.white,),
-                      label: Text('Add', style: TextStyle(color: Colors.white),),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 16.0,
-          ),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance.collection('services').snapshots(),
@@ -77,43 +51,7 @@ class service extends StatelessWidget {
                     final description = service['description'];
                     final reference = service.reference;
 
-                    return GestureDetector(
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text('Update or Delete Service'),
-                              content: Text('What would you like to do with this service?'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    Navigator.push(context, MaterialPageRoute(builder:
-                                        (context) => UpdateServicePage(
-                                          name: name,
-                                          price: price,
-                                          image: image,
-                                          description: description,
-                                          reference: reference,
-                                        )
-                                    ));
-                                  },
-                                  child: Text('Update'),
-                                ),
-                                TextButton(
-                                  onPressed: () async {
-                                    await reference.delete();
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text('Delete'),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
-                      child: Card(
+                    return Card(
                         margin: const EdgeInsets.symmetric(
                           horizontal: 16.0,
                           vertical: 8.0,
@@ -135,7 +73,6 @@ class service extends StatelessWidget {
                             ),
                           ],
                         ),
-                      ),
                     );
                   },
                 );
@@ -147,7 +84,6 @@ class service extends StatelessWidget {
     );
   }
 }
-
 
 class CustomSearchDelegate extends SearchDelegate {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;

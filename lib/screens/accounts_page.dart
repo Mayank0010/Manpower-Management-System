@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:manpower_management_app/screens/accounts_details.dart';
 
 class AccountsPage extends StatefulWidget {
   @override
@@ -30,22 +31,31 @@ class _AccountsPageState extends State<AccountsPage> {
         SnackBar(content: Text('Admin account already exists for this user.')),
       );
     } else if (_nameController.text.isNotEmpty) {
-      // Add a new record if the current user does not exist in the database.
-      await _adminDetailsRef.add({
-        'name': _nameController.text,
-        'email': _emailController.text,
-        'mobile': _mobileController.text,
-        'role': _roleController.text,
-        'address': _addressController.text,
-      });
-      _nameController.clear();
-      _emailController.clear();
-      _mobileController.clear();
-      _roleController.clear();
-      _addressController.clear();
+      // Check if an admin with the same email already exists in the database.
+      QuerySnapshot adminSnapshot = await _adminDetailsRef.where('email', isEqualTo: _emailController.text).get();
+
+      if (adminSnapshot.docs.isNotEmpty) {
+        // Display an error message if an admin with the same email already exists in the database.
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Admin account already exists with this email.')),
+        );
+      } else {
+        // Add a new record if the current user does not exist in the database.
+        await _adminDetailsRef.add({
+          'name': _nameController.text,
+          'email': _emailController.text,
+          'mobile': _mobileController.text,
+          'role': _roleController.text,
+          'address': _addressController.text,
+        });
+        _nameController.clear();
+        _emailController.clear();
+        _mobileController.clear();
+        _roleController.clear();
+        _addressController.clear();
+      }
     }
   }
-
 
   void _updateAdmin(String id) async {
     await _adminDetailsRef.doc(id).update({
@@ -66,7 +76,7 @@ class _AccountsPageState extends State<AccountsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Admin Accounts'),
+        title: Text('Admin Profile'),
       ),
       body: Container(
         padding: EdgeInsets.all(10.0),
@@ -99,47 +109,19 @@ class _AccountsPageState extends State<AccountsPage> {
             ),
             SizedBox(height: 6.0),
             ElevatedButton(
-              child: Text('Add'),
+              child: Text('Save', style: TextStyle(color: Colors.white),),
               onPressed: () {
                 _submitForm();
               },
             ),
-            SizedBox(height: 16.0),
-            Text(
-              'Admin Details',
-              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 16.0),
-            StreamBuilder<QuerySnapshot>(
-              stream: _adminDetailsRef.snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  final adminDocs = snapshot.data!.docs;
-                  return Expanded(
-                    child: ListView.builder(
-                      itemCount: adminDocs.length,
-                      itemBuilder: (context, index) {
-                        var admin = adminDocs[index];
-                        return ListTile(
-                          title: Text(admin['name']),
-                          subtitle: Text(admin['email']),
-                          trailing: IconButton(
-                              icon: Icon(Icons.edit),
-                              onPressed: () {
-                                _nameController.text = admin['name'];
-                                _emailController.text = admin['email'];
-                                _mobileController.text = admin['mobile'];
-                                _roleController.text = admin['role'];
-                                _addressController.text = admin['address'];
-                              }),
-
-                        );
-                      },
-                    ),
-                  );
-                } else {
-                  return CircularProgressIndicator();
-                }
+            SizedBox(height: 5.0,),
+            ElevatedButton(
+              child: Text('Show admin details', style: TextStyle(color: Colors.white),),
+              onPressed: () {
+                User? user = FirebaseAuth.instance.currentUser;
+                Navigator.push(context, MaterialPageRoute(builder:
+                    (context) => AccountDetailsPage()
+                ));
               },
             ),
           ],

@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:manpower_management_app/authentication/admin_login.dart';
 import 'package:manpower_management_app/screens/admin_dashboard.dart';
+import 'package:manpower_management_app/screens/admin_screen.dart';
 import 'package:manpower_management_app/screens/home_screen.dart';
-import 'package:manpower_management_app/services/admin_form.dart';
 
 class AdminRegister extends StatefulWidget {
   const AdminRegister({Key? key}) : super(key: key);
@@ -22,9 +23,9 @@ class _AdminRegisterState extends State<AdminRegister> {
     return Container(
       decoration: BoxDecoration(
           gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Color(0xffE9895E), Color(0xff7AE0F6)])
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xffF89669), Color(0xff27f985)])
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -40,128 +41,138 @@ class _AdminRegisterState extends State<AdminRegister> {
           ),
           elevation: 0,
         ),
-        body: Stack(
-          children: [
-            Container(
-              padding: EdgeInsets.only(left: 35, top: 30),
-              child: Text(
-                'Create Account',
-                style: TextStyle(color: Colors.white, fontSize: 33),
-              ),
-            ),
-            SingleChildScrollView(
-              child: Container(
-                padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height * 0.14),
-                child: Column(
+        body: SingleChildScrollView(
+              child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
                       margin: EdgeInsets.only(left: 35, right: 35),
                       child: Column(
                         children: [
-                          SizedBox(height: 5.0,),
-                          TextFormField(
-                            controller: emailController,
-                            style: TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                    color: Colors.white,
+                          SizedBox(height: 60),
+                          Center(
+                            child: Image.asset(
+                              'assets/images/icons8-admin-64.png',
+                              height: 64,
+                              width: 64,
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 35),
+                            child: Text(
+                              'Admin Signup',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 33,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 35),
+                            child: Column(
+                              children: [
+                                TextFormField(
+                                  controller: emailController,
+                                  style: TextStyle(color: Colors.black),
+                                  decoration: InputDecoration(
+                                      filled: true,
+                                      labelText: "Email",
+                                      prefixIcon: Icon(Icons.email),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      )
                                   ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter email';
+                                    }
+                                    return null;
+                                  },
                                 ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                    color: Colors.white,
-                                  ),
+                                SizedBox(
+                                  height: 20,
                                 ),
-                                labelText: "Email",
-                                hintStyle: TextStyle(color: Colors.white),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                )),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter email';
-                              }
-                              return null;
-                            },
+                                TextFormField(
+                                  controller: passwordController,
+                                  obscureText: isObscure,
+                                  decoration: InputDecoration(
+                                      filled: true,
+                                      labelText: "Password",
+                                      suffixIcon: IconButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              isObscure = !isObscure;
+                                            });
+                                          },
+                                          icon: Icon(
+                                              isObscure ?
+                                              Icons.visibility_off : Icons.visibility
+                                          )
+                                      ),
+                                      prefixIcon: IconButton(
+                                          onPressed: () {}, icon: Icon(Icons.lock)),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      )),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter password';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ],
+                            ),
+
                           ),
                           SizedBox(
                             height: 30,
                           ),
-                          TextFormField(
-                            controller: passwordController,
-                            style: TextStyle(color: Colors.white),
-                            obscureText: isObscure,
-                            decoration: InputDecoration(
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                labelText: "Password",
-                                hintStyle: TextStyle(color: Colors.white),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              suffixIcon: IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      isObscure = !isObscure;
-                                    });
-                                  },
-                                  icon: Icon(
-                                      isObscure ?
-                                      Icons.visibility_off : Icons.visibility
-                                  )),
-                          ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter password';
-                              }
-                              return null;
-                            },
-                          ),
-                          SizedBox(
-                            height: 40,
-                          ),
-                          Row(
+                          Column(
                             children: [
-                              Container(
-                                height: 60,
-                                width: 340,
-                                child: ElevatedButton(
-                                  child: Text(
-                                      'Sign Up', style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      fontStyle: FontStyle.normal
-                                  )
+                              ElevatedButton(
+                                onPressed: () {
+                                  signup();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  backgroundColor: Color(0xffF89669),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
                                   ),
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: Color(0xffE9895E),
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                          BorderRadius.circular(15)),
-                                      textStyle: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 20,
-                                          fontStyle: FontStyle.normal)),
-                                  onPressed: () {
-                                    signup();
-                                  },
+                                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 80),
+                                  textStyle: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              )
+                                child: Text('SIGNUP'),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10.0,),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Have an account?', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 20),),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.push(context, MaterialPageRoute(builder:
+                                      (context) => AdminLogin()
+                                  ));
+                                },
+                                child: Text(
+                                  'Login',
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                      decoration: TextDecoration.underline,
+                                      color: Colors.white,
+                                      fontSize: 20),
+                                ),
+                                style: ButtonStyle(),
+                              ),
                             ],
                           ),
                         ],
@@ -171,9 +182,6 @@ class _AdminRegisterState extends State<AdminRegister> {
                 ),
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -190,7 +198,7 @@ class _AdminRegisterState extends State<AdminRegister> {
           password: passwordController.text.trim()
       ).then((value) {
         Navigator.push(context, MaterialPageRoute(builder:
-            (context) => AdminDashboard()
+            (context) => AdminScreen()
         ));
       });
     } on FirebaseAuthException catch(e) {

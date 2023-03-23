@@ -1,13 +1,5 @@
-import 'dart:io';
-import 'package:get/get.dart';
-import 'package:http/http.dart';
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:manpower_management_app/authentication/admin_register.dart';
-import 'package:manpower_management_app/main.dart';
-import 'package:manpower_management_app/screens/admin_dashboard.dart';
-import 'package:manpower_management_app/screens/admin_home.dart';
 import 'package:manpower_management_app/screens/home_screen.dart';
 import 'package:manpower_management_app/services/forgot_password.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,9 +23,9 @@ class _AdminLoginState extends State<AdminLogin> {
     return Container(
       decoration: BoxDecoration(
           gradient: LinearGradient(
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-              colors: [Color(0xff62E756), Color(0xff22ADCB)])
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xffF89669), Color(0xff27f985)])
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -49,45 +41,56 @@ class _AdminLoginState extends State<AdminLogin> {
               },
             )
         ),
-        body: Stack(
-          children: [
-            Container(
-              padding: EdgeInsets.only(left: 35, top: 40),
-              child: Text(
-                'Admin Sign In',
-                style: TextStyle(color: Colors.white, fontSize: 33),
-              ),
-            ),
-            SingleChildScrollView(
-              child: Container(
-                padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height * 0.20),
-                child: Column(
+        body: SingleChildScrollView(
+              child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
                       margin: EdgeInsets.only(left: 35, right: 35),
                       child: Column(
                         children: [
-                          TextFormField(
-                            controller: emailController,
-                            style: TextStyle(color: Colors.black),
-                            decoration: InputDecoration(
-                                fillColor: Colors.grey.shade100,
-                                filled: true,
-                                labelText: "Email",
-                                prefixIcon: IconButton(
-                                    onPressed: () {}, icon: Icon(Icons.email)),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                )),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter email';
-                              }
-                              return null;
-                            },
+                          SizedBox(height: 60),
+                          Center(
+                            child: Image.asset(
+                              'assets/images/icons8-admin-64.png',
+                              height: 64,
+                              width: 64,
+                            ),
                           ),
+                          SizedBox(height: 20),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 35),
+                            child: Text(
+                              'Admin Login',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 33,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 35),
+                            child: Column(
+                              children: [
+                                TextFormField(
+                                  controller: emailController,
+                                  style: TextStyle(color: Colors.black),
+                                  decoration: InputDecoration(
+                                      filled: true,
+                                      labelText: "Email",
+                                      prefixIcon: Icon(Icons.email),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      )
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter email';
+                                    }
+                                    return null;
+                                  },
+                                ),
                           SizedBox(
                             height: 20,
                           ),
@@ -95,7 +98,6 @@ class _AdminLoginState extends State<AdminLogin> {
                             controller: passwordController,
                             obscureText: isObscure,
                             decoration: InputDecoration(
-                                fillColor: Colors.grey.shade100,
                                 filled: true,
                                 labelText: "Password",
                                 suffixIcon: IconButton(
@@ -121,12 +123,16 @@ class _AdminLoginState extends State<AdminLogin> {
                               return null;
                             },
                           ),
+                          ],
+                            ),
+
+                          ),
                           SizedBox(
                             height: 15,
                           ),
                           Row(
                             children: [
-                              SizedBox(width: 190.0,),
+                              SizedBox(width: 160.0,),
                               InkWell(
                                 onTap: () {
                                   Navigator.push(context, MaterialPageRoute(builder:
@@ -138,7 +144,7 @@ class _AdminLoginState extends State<AdminLogin> {
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600,
                                   decoration: TextDecoration.underline,
-                                  color: Colors.blueGrey,
+                                  color: Colors.white,
                                   ),),
                               )
                             ],
@@ -146,35 +152,33 @@ class _AdminLoginState extends State<AdminLogin> {
                           SizedBox(
                             height: 30,
                           ),
-                          Row(
+                          Column(
                             children: [
-                              Container(
-                                height: 60,
-                                width: 340,
-                                child: ElevatedButton(
-                                  child: Text(
-                                    'Login',
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: Color(0xffCDF3FB),
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(15)),
-                                      textStyle: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 20,
-                                          fontStyle: FontStyle.normal)),
+                              ElevatedButton(
                                   onPressed: () {
                                     login();
                                   },
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: Colors.white,
+                                    backgroundColor: Color(0xffF89669),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 80),
+                                    textStyle: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  child: Text('LOGIN'),
                                 ),
-                              )
                             ],
                           ),
                           SizedBox(height: 10.0,),
-                          Row(
+                          Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Dont have an account?', style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.w600, fontSize: 20),),
+                              Text('Dont have an account?', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 20),),
                               TextButton(
                                 onPressed: () {
                                   Navigator.push(context, MaterialPageRoute(builder:
@@ -186,7 +190,7 @@ class _AdminLoginState extends State<AdminLogin> {
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                       decoration: TextDecoration.underline,
-                                      color: Colors.blueGrey,
+                                      color: Colors.white,
                                       fontSize: 20),
                                 ),
                                 style: ButtonStyle(),
@@ -200,9 +204,6 @@ class _AdminLoginState extends State<AdminLogin> {
                 ),
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -238,6 +239,18 @@ class _AdminLoginState extends State<AdminLogin> {
           email: emailController.text.trim(),
           password: passwordController.text.trim()
       );
+
+      /*
+      final userRef = FirebaseFirestore.instance.collection('admin_details').doc();
+      final userData = await userRef.get();
+      if (userData.exists && userData.data()!['role'] == 'district') {
+        // Navigate to admin dashboard
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => AdminDashboard()),
+        );
+      }
+       */
 
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Admin logged in!!')));

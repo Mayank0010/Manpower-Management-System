@@ -6,53 +6,60 @@ import 'package:shared_preferences/shared_preferences.dart';
 class IntroScreen extends StatelessWidget {
   IntroScreen({Key? key}) : super(key: key);
 
-  ///Changed a little bit of buttons styling and text for the thumbnail lol
-  ///Thanks for coming here :-)
   final List<PageViewModel> pages = [
     PageViewModel(
-        title: 'Connect With Everyone',
-        body: 'Connect with us to request a service for your home.',
-        footer: SizedBox(
-          height: 45,
-          width: 300,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orangeAccent,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20)
-                ),
-                elevation: 8
+      title: 'Connect With Everyone',
+      body: 'Connect with us to request a service for your home.',
+      footer: SizedBox(
+        height: 45,
+        width: double.infinity,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            primary: Colors.orangeAccent,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
             ),
-            onPressed: () {},
-            child: const Text("Let's Go", style: TextStyle(fontSize: 20, color: Colors.white70)),
+            elevation: 8,
+          ),
+          onPressed: () {},
+          child: const Text(
+            "Let's Go",
+            style: TextStyle(
+              fontSize: 20,
+              color: Colors.white,
+            ),
           ),
         ),
-        image: Center(
-          child: Image.asset('assets/images/pest.png'),
+      ),
+      image: Center(
+        child: Image.asset(
+          'assets/images/pest.png',
+          height: 200,
         ),
-        decoration: const PageDecoration(
-            titleTextStyle: TextStyle(
-              fontSize: 25.0,
-              fontWeight: FontWeight.bold,
-            )
-        )
+      ),
+      decoration: const PageDecoration(
+        titleTextStyle: TextStyle(
+          fontSize: 25.0,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
     ),
     PageViewModel(
         title: 'Have Access Everywhere!',
         body: 'Leading Home Service and Products Provider',
         footer: SizedBox(
           height: 45,
-          width: 300,
+          width: double.infinity,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orangeAccent,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20)
-                ),
-                elevation: 8
+              primary: Colors.orangeAccent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              elevation: 8,
             ),
             onPressed: () {},
-            child: const Text("Why to wait!", style: TextStyle(fontSize: 20, color: Colors.white70),),
+              child: const Text("Why to wait!", style: TextStyle(fontSize: 20, color: Colors.white70),),
           ),
         ),
         image: Center(

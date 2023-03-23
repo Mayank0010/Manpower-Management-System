@@ -10,22 +10,27 @@ import 'package:manpower_management_app/screens/payment_history.dart';
 import 'package:manpower_management_app/screens/product-page.dart';
 import 'package:manpower_management_app/screens/product_page.dart';
 import 'package:manpower_management_app/screens/product_screen.dart';
+import 'package:manpower_management_app/screens/product_screen1.dart';
 import 'package:manpower_management_app/screens/services.dart';
+import 'package:manpower_management_app/screens/services1.dart';
 import 'package:manpower_management_app/screens/worker_verification.dart';
 
 
-class AdminDashboard extends StatefulWidget {
-  const AdminDashboard({Key? key}) : super(key: key);
+class AdminDashboard1 extends StatefulWidget {
+  const AdminDashboard1({Key? key}) : super(key: key);
 
   @override
-  State<AdminDashboard> createState() => _AdminDashboardState();
+  State<AdminDashboard1> createState() => _AdminDashboard1State();
 }
 
-class _AdminDashboardState extends State<AdminDashboard> {
+class _AdminDashboard1State extends State<AdminDashboard1> {
+
+  int _currentIndex = 0;
   String? _role;
 
   void onTabTapped(int index) {
     setState(() {
+      _currentIndex = index;
       _getAdminRole();
     });
   }
@@ -119,34 +124,6 @@ class _AdminDashboardState extends State<AdminDashboard> {
               ),
               ListTile(
                 leading: Icon(
-                  Icons.account_box_rounded,
-                  size: 22,
-                ),
-                title: const Text('Workers', style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Roboto'),),
-                onTap: () {
-                  // Update the state of the app
-                  // Then close the drawer
-                  Navigator.push(context, MaterialPageRoute(builder:
-                      (context) => AvailableWorkersWidget()
-                  ));
-                },
-              ),
-              ListTile(
-                leading: Icon(
-                  Icons.account_circle,
-                  size: 22,
-                ),
-                title: const Text('Customers', style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Roboto'),),
-                onTap: () {
-                  // Update the state of the app
-                  // Then close the drawer
-                  Navigator.push(context, MaterialPageRoute(builder:
-                      (context) => CustomerDetails()
-                  ));
-                },
-              ),
-              ListTile(
-                leading: Icon(
                   Icons.production_quantity_limits,
                   size: 22,
                 ),
@@ -156,7 +133,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   // Then close the drawer
                   Navigator.push(context, MaterialPageRoute(builder:
                   //(context) => AdminRegister()
-                      (context) => ProductScreen()
+                      (context) => ProductScreen1()
                   ));
                 },
               ),
@@ -170,7 +147,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   // Update the state of the app
                   // Then close the drawer
                   Navigator.push(context, MaterialPageRoute(builder:
-                      (context) => service()
+                      (context) => service1()
                   ));
                 },
               ),
@@ -185,20 +162,6 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   // Then close the drawer
                   Navigator.push(context, MaterialPageRoute(builder:
                       (context) => Orders()
-                  ));
-                },
-              ),
-              ListTile(
-                leading: Icon(
-                  Icons.verified,
-                  size: 22,
-                ),
-                title: const Text('Worker Verification', style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Roboto'),),
-                onTap: () {
-                  // Update the state of the app
-                  // Then close the drawer
-                  Navigator.push(context, MaterialPageRoute(builder:
-                      (context) => WorkerVerificationPage()
                   ));
                 },
               ),
@@ -301,6 +264,33 @@ class _AdminDashboardState extends State<AdminDashboard> {
           ],
         ),
       ),
+
+      bottomNavigationBar: BottomNavigationBar(
+        fixedColor: Colors.amber,
+        backgroundColor: Colors.white,
+        type: BottomNavigationBarType.fixed,
+        onTap: onTabTapped,
+        currentIndex: _currentIndex,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_circle, color: Colors.orangeAccent,),
+            label: 'Profile',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home, color: Colors.orangeAccent,),
+            label: 'Services',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_cart, color: Colors.orangeAccent,),
+            label: 'Products',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.receipt, color: Colors.orangeAccent,),
+            label: 'Orders',
+          ),
+        ],
+      ),
+
     );
   }
 

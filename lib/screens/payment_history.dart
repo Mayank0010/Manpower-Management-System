@@ -30,7 +30,28 @@ class PaymentHistoryList extends StatelessWidget {
       transactionId: '789012',
       customerName: 'Bob',
       customerMobileNumber: '0987654321',
-      orderPrice: 29.99,
+      orderPrice: 30,
+      transactionDate: DateTime.now(),
+    ),
+    PaymentHistory(
+      transactionId: '992901',
+      customerName: 'Mayank',
+      customerMobileNumber: '7987654321',
+      orderPrice: 65,
+      transactionDate: DateTime.now(),
+    ),
+    PaymentHistory(
+      transactionId: '789090',
+      customerName: 'Rahul',
+      customerMobileNumber: '7587654321',
+      orderPrice: 1000,
+      transactionDate: DateTime.now(),
+    ),
+    PaymentHistory(
+      transactionId: '789912',
+      customerName: 'Ashish',
+      customerMobileNumber: '7843654321',
+      orderPrice: 555,
       transactionDate: DateTime.now(),
     ),
   ];
@@ -46,10 +67,10 @@ class PaymentHistoryList extends StatelessWidget {
         itemBuilder: (BuildContext context, int index) {
           final payment = payments[index];
           return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
             child: Card(
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

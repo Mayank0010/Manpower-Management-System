@@ -2,15 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:manpower_management_app/screens/product_page.dart';
 import 'package:manpower_management_app/screens/service_page.dart';
-import 'package:manpower_management_app/screens/update_service_page.dart';
+import 'package:manpower_management_app/screens/update_product_page.dart';
 
-class service extends StatelessWidget {
+class ProductScreen1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Services'),
+        title: Text('Products'),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -34,33 +34,9 @@ class service extends StatelessWidget {
             ),
           ),
           SizedBox(height: 10.0),
-          SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder:
-                            (context) => ServicesPage()
-                        ));
-                      },
-                      icon: Icon(Icons.add, color: Colors.white,),
-                      label: Text('Add', style: TextStyle(color: Colors.white),),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 16.0,
-          ),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance.collection('services').snapshots(),
+              stream: FirebaseFirestore.instance.collection('products').snapshots(),
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (!snapshot.hasData) {
                   return Center(child: CircularProgressIndicator());
@@ -75,45 +51,8 @@ class service extends StatelessWidget {
                     final price = service['price'];
                     final image = service['image'];
                     final description = service['description'];
-                    final reference = service.reference;
 
-                    return GestureDetector(
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text('Update or Delete Service'),
-                              content: Text('What would you like to do with this service?'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    Navigator.push(context, MaterialPageRoute(builder:
-                                        (context) => UpdateServicePage(
-                                          name: name,
-                                          price: price,
-                                          image: image,
-                                          description: description,
-                                          reference: reference,
-                                        )
-                                    ));
-                                  },
-                                  child: Text('Update'),
-                                ),
-                                TextButton(
-                                  onPressed: () async {
-                                    await reference.delete();
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text('Delete'),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
-                      child: Card(
+                    return Card(
                         margin: const EdgeInsets.symmetric(
                           horizontal: 16.0,
                           vertical: 8.0,
@@ -135,8 +74,7 @@ class service extends StatelessWidget {
                             ),
                           ],
                         ),
-                      ),
-                    );
+                      );
                   },
                 );
               },
@@ -149,52 +87,34 @@ class service extends StatelessWidget {
 }
 
 
-class CustomSearchDelegate extends SearchDelegate {
+class CustomSearchDelegate extends SearchDelegate{
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  @override
-  String get searchFieldLabel => 'Search Services';
 
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
-      IconButton(
-        onPressed: () {
-          query = '';
-        },
-        icon: const Icon(Icons.clear),
-      ),
+      IconButton(onPressed: () {
+        query = '';
+      }, icon: const Icon(Icons.clear))
     ];
   }
 
   @override
   Widget buildLeading(BuildContext context) {
-    return IconButton(
-      onPressed: () {
-        close(context, null);
-      },
-      icon: const Icon(Icons.arrow_back),
-    );
+    return IconButton(onPressed: () {
+      close(context, null);
+    }, icon: const Icon(Icons.arrow_back));
   }
 
   @override
   Widget buildResults(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: _firestore
-          .collection('services')
-          .where('name', isGreaterThanOrEqualTo: query.toLowerCase())
-          .where('name', isLessThan: query.toLowerCase() + 'z')
-          .snapshots(),
+      stream: _firestore.collection('products').where('name', isGreaterThanOrEqualTo: query).where('name', isLessThan: query + 'z').snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
         final results = snapshot.data!.docs;
-        if (results.isEmpty) {
-          return const Center(
-            child: Text('No results found'),
-          );
-        }
         return ListView.builder(
           itemCount: results.length,
           itemBuilder: (context, index) {
@@ -202,7 +122,8 @@ class CustomSearchDelegate extends SearchDelegate {
             return ListTile(
               title: Text(result['name']),
               onTap: () {
-                close(context, result);
+                // do something when the result is tapped
+                //showResults(context);
               },
             );
           },
@@ -214,11 +135,7 @@ class CustomSearchDelegate extends SearchDelegate {
   @override
   Widget buildSuggestions(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: _firestore
-          .collection('services')
-          .where('name', isGreaterThanOrEqualTo: query.toLowerCase())
-          .where('name', isLessThan: query.toLowerCase() + 'z')
-          .snapshots(),
+      stream: _firestore.collection('products').where('name', isGreaterThanOrEqualTo: query).where('name', isLessThan: query + 'z').snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
@@ -232,7 +149,7 @@ class CustomSearchDelegate extends SearchDelegate {
               title: Text(result['name']),
               onTap: () {
                 query = result['name'];
-                close(context, result);
+                showResults(context);
               },
             );
           },
