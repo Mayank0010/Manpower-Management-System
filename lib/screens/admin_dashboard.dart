@@ -12,6 +12,7 @@ import 'package:manpower_management_app/screens/product_page.dart';
 import 'package:manpower_management_app/screens/product_screen.dart';
 import 'package:manpower_management_app/screens/services.dart';
 import 'package:manpower_management_app/screens/worker_verification.dart';
+import 'package:manpower_management_app/services/edit_profile.dart';
 
 
 class AdminDashboard extends StatefulWidget {
@@ -54,7 +55,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
         ),),
       ),
         actions: [
-          IconButton(onPressed: () {
+          IconButton(
+              onPressed: () {
             showSearch(context: context, delegate: CustomSearchDelegate());
           },
               icon: const Icon(Icons.search, color: Colors.white,)),
@@ -113,7 +115,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   // Then close the drawer
                   Navigator.push(context, MaterialPageRoute(builder:
                   //(context) => AdminRegister()
-                      (context) => AccountsPage()
+                      (context) => EditProfile()
                   ));
                 },
               ),
@@ -190,20 +192,6 @@ class _AdminDashboardState extends State<AdminDashboard> {
               ),
               ListTile(
                 leading: Icon(
-                  Icons.verified,
-                  size: 22,
-                ),
-                title: const Text('Worker Verification', style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Roboto'),),
-                onTap: () {
-                  // Update the state of the app
-                  // Then close the drawer
-                  Navigator.push(context, MaterialPageRoute(builder:
-                      (context) => WorkerVerificationPage()
-                  ));
-                },
-              ),
-              ListTile(
-                leading: Icon(
                   Icons.payment,
                   size: 22,
                 ),
@@ -256,31 +244,32 @@ class _AdminDashboardState extends State<AdminDashboard> {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 16),
-            _buildScrollableList(
-              items: [
-                'Order 1',
-                'Order 2',
-                'Order 3',
-                'Order 4',
-                'Order 5',
-                'Order 6',
-              ],
+            StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance.collection('service_booking').orderBy('serviceTitle', descending: true).limit(6).snapshots(),
+              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (!snapshot.hasData) {
+                  return CircularProgressIndicator();
+                }
+                return _buildScrollableList(
+                  items: snapshot.data!.docs.map((doc) => 'Title: ${doc['serviceTitle']} \nPrice: ${doc['price']}').toList(),
+                );
+              },
             ),
             SizedBox(height: 32),
             Text(
               'Top Services',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 16),
-            _buildScrollableList(
-              items: [
-                'Service 1',
-                'Service 2',
-                'Service 3',
-                'Service 4',
-                'Service 5',
-                'Service 6',
-              ],
+            StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance.collection('services').orderBy('name', descending: true).limit(6).snapshots(),
+              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (!snapshot.hasData) {
+                  return CircularProgressIndicator();
+                }
+                return _buildScrollableList(
+                  items: snapshot.data!.docs.map((doc) => 'Name: ${doc['name']}\nPrice: ${doc['price']}').toList(),
+                );
+              },
             ),
             SizedBox(height: 32),
             Text(
@@ -288,15 +277,16 @@ class _AdminDashboardState extends State<AdminDashboard> {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 16),
-            _buildScrollableList(
-              items: [
-                'Product 1',
-                'Product 2',
-                'Product 3',
-                'Product 4',
-                'Product 5',
-                'Product 6',
-              ],
+            StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance.collection('products').orderBy('name', descending: true).limit(6).snapshots(),
+              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (!snapshot.hasData) {
+                  return CircularProgressIndicator();
+                }
+                return _buildScrollableList(
+                  items: snapshot.data!.docs.map((doc) => 'Name: ${doc['name']}\nPrice: ${doc['price']}').toList(),
+                );
+              },
             ),
           ],
         ),

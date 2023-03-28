@@ -1,7 +1,10 @@
+import 'dart:convert';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:manpower_management_app/authentication/admin_login.dart';
-import 'package:manpower_management_app/screens/admin_dashboard.dart';
 import 'package:manpower_management_app/screens/admin_screen.dart';
 import 'package:manpower_management_app/screens/home_screen.dart';
 
@@ -14,12 +17,25 @@ class AdminRegister extends StatefulWidget {
 
 class _AdminRegisterState extends State<AdminRegister> {
   var emailController = TextEditingController();
+  var nameController = TextEditingController();
+  var mobileController = TextEditingController();
+  var roleController = TextEditingController();
   var passwordController = TextEditingController();
 
   bool isObscure = true;
 
+  String hashPassword(String password) {
+    // Hash the password using SHA-256
+    var bytes = utf8.encode(password);
+    var digest = sha256.convert(bytes);
+
+    // Convert the digest to a string and return it
+    return digest.toString();
+  }
+
   @override
   Widget build(BuildContext context) {
+    FocusNode myFocusNode = new FocusNode();
     return Container(
       decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -49,7 +65,7 @@ class _AdminRegisterState extends State<AdminRegister> {
                       margin: EdgeInsets.only(left: 35, right: 35),
                       child: Column(
                         children: [
-                          SizedBox(height: 60),
+                          SizedBox(height: 30),
                           Center(
                             child: Image.asset(
                               'assets/images/icons8-admin-64.png',
@@ -74,11 +90,40 @@ class _AdminRegisterState extends State<AdminRegister> {
                             child: Column(
                               children: [
                                 TextFormField(
-                                  controller: emailController,
-                                  style: TextStyle(color: Colors.black),
+                                  style: TextStyle(color: Colors.white),
+                                  controller: nameController,
                                   decoration: InputDecoration(
                                       filled: true,
+                                      fillColor: Colors.transparent,
+                                      labelText: "Name",
+                                      labelStyle: TextStyle(
+                                          color: myFocusNode.hasFocus ? Colors.blueGrey : Colors.black
+                                      ),
+                                      prefixIcon: Icon(Icons.account_box),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      )
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter name';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                TextFormField(
+                                  style: TextStyle(color: Colors.white),
+                                  controller: emailController,
+                                  decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: Colors.transparent,
                                       labelText: "Email",
+                                      labelStyle: TextStyle(
+                                          color: myFocusNode.hasFocus ? Colors.blueGrey : Colors.black
+                                      ),
                                       prefixIcon: Icon(Icons.email),
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(10),
@@ -95,11 +140,66 @@ class _AdminRegisterState extends State<AdminRegister> {
                                   height: 20,
                                 ),
                                 TextFormField(
-                                  controller: passwordController,
-                                  obscureText: isObscure,
+                                  style: TextStyle(color: Colors.white),
+                                  controller: mobileController,
                                   decoration: InputDecoration(
                                       filled: true,
+                                      fillColor: Colors.transparent,
+                                      labelText: "Mobile Number",
+                                      labelStyle: TextStyle(
+                                          color: myFocusNode.hasFocus ? Colors.blueGrey : Colors.black
+                                      ),
+                                      prefixIcon: Icon(Icons.mobile_friendly),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      )
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter mobile number';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                TextFormField(
+                                  style: TextStyle(color: Colors.white),
+                                  controller: roleController,
+                                  decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: Colors.transparent,
+                                      labelText: "Role",
+                                      labelStyle: TextStyle(
+                                          color: myFocusNode.hasFocus ? Colors.blueGrey : Colors.black
+                                      ),
+                                      prefixIcon: Icon(Icons.message),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      )
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter role';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                TextFormField(
+                                  controller: passwordController,
+                                  obscureText: isObscure,
+                                  style: TextStyle(color: Colors.white),
+                                  decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: Colors.transparent,
                                       labelText: "Password",
+                                      labelStyle: TextStyle(
+                                          color: myFocusNode.hasFocus ? Colors.blueGrey : Colors.black
+                                      ),
                                       suffixIcon: IconButton(
                                           onPressed: () {
                                             setState(() {
@@ -193,10 +293,18 @@ class _AdminRegisterState extends State<AdminRegister> {
     );
 
     try {
+      String hashedPassword = hashPassword(passwordController.text);
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text.trim(),
           password: passwordController.text.trim()
       ).then((value) {
+        FirebaseFirestore.instance.collection('admin_users').doc(value.user?.uid)
+            .set({"name": nameController.text,
+                  "email": value.user?.email,
+                  "mobile": mobileController.text,
+                  "role": roleController.text,
+                  "password": hashedPassword,
+            });
         Navigator.push(context, MaterialPageRoute(builder:
             (context) => AdminScreen()
         ));

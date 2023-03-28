@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:manpower_management_app/services/schedule_interview.dart';
 
 class WorkerVerificationPage extends StatelessWidget {
   @override
@@ -40,17 +41,36 @@ class WorkerVerificationPage extends StatelessWidget {
               ],
             ),
           ),
-          // Schedule interview button
-          Container(
-            margin: EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
-            child: ElevatedButton(
-              onPressed: () {
-                // TODO: Schedule interview
-              },
-              child: Text('Schedule Interview', style: TextStyle(color: Colors.white)),
-            ),
+          // Buttons to schedule or reject the worker
+          SizedBox(height: 50.0,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    // TODO: Reject worker
+                  },
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red
+                  ),
+                  child: Text('Reject Worker', style: TextStyle(color: Colors.white),),
+                ),
+              ),
+              SizedBox(width: 5.0,),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    // TODO: Schedule interview
+                    Navigator.push(context, MaterialPageRoute(builder:
+                        (context) => InterviewSchedule()
+                    ));
+                  },
+                  child: Text('Schedule Interview', style: TextStyle(color: Colors.white),),
+                ),
+              ),
+            ],
           ),
-
         ],
       ),
     );

@@ -4,20 +4,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'introduction_onboarding.dart';
 
-class splashScreen extends StatefulWidget {
+class SplashScreen extends StatefulWidget {
   @override
-  State<splashScreen> createState() => _splashScreenState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _splashScreenState extends State<splashScreen> {
+class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-
     Timer(Duration(seconds: 3), (){
       Navigator.pushReplacement(context, MaterialPageRoute(builder:
-      (context) => IntroScreen()
+          (context) => IntroScreen()
       ));
     });
   }
@@ -25,26 +23,50 @@ class _splashScreenState extends State<splashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [Color(0xffFBBB9C), Color(0xffF9FCFD)])
-        ),
-        child: Center(
+        backgroundColor: Colors.white,
+        body: Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0xffFBBB9C), Color(0xffF9FCFD)]
+              )
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                height: 300,
-                width: 200,
-                child: Image.asset('assets/images/im2.png'),
+              Expanded(
+                child: Container(
+                  padding: EdgeInsets.all(32),
+                  child: Image.asset(
+                    'assets/images/im2.png',
+                  ),
+                ),
               ),
+              Expanded(
+                child: Column(
+                  children: [
+                    CircularProgressIndicator(
+                      backgroundColor: Colors.white,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Theme.of(context).colorScheme.secondary,
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    Text(
+                      "Loading...",
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )
+                  ],
+                ),
+              )
             ],
           ),
-        ),
-      )
+        )
     );
   }
 }

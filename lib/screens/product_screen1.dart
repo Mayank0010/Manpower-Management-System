@@ -1,10 +1,35 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:manpower_management_app/screens/product_page.dart';
-import 'package:manpower_management_app/screens/service_page.dart';
-import 'package:manpower_management_app/screens/update_product_page.dart';
 
-class ProductScreen1 extends StatelessWidget {
+class ProductScreen1 extends StatefulWidget {
+
+  @override
+  State<ProductScreen1> createState() => _ProductScreen1State();
+}
+
+class _ProductScreen1State extends State<ProductScreen1> {
+  String searchText = '';
+  Future<List<QueryDocumentSnapshot>>? _futureServices;
+
+  @override
+  void initState() {
+    super.initState();
+    _futureServices = _getProducts('');
+  }
+
+  Future<List<QueryDocumentSnapshot>> _getProducts(String query) async{
+    final firestore = FirebaseFirestore.instance;
+    final servicesRef = firestore.collection('products');
+    final snapshot = await servicesRef.get();
+
+    final services = snapshot.docs.where((service) =>
+        service['name'].toLowerCase().contains(query.toLowerCase()) ||
+        service['description'].toLowerCase().contains(query.toLowerCase()))
+        .toList();
+
+    return services;
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -16,33 +41,42 @@ class ProductScreen1 extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: const EdgeInsets.all(14.0),
-            child: TextField(
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white,
-                hintText: 'Search for services...',
-                suffixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12.0),
-                  borderSide: BorderSide.none,
+              padding: const EdgeInsets.all(14.0),
+              child: Theme(
+                data: Theme.of(context).copyWith(splashColor: Colors.white),
+                child: TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      searchText = value;
+                      _futureServices = _getProducts(searchText);
+                    });
+                  },
+                  //style: TextStyle(color: Colors.blue),
+                  decoration: InputDecoration(
+                    contentPadding:
+                    const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15),
+                    hintText: "Search a product",
+                    suffixIcon: const Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                      borderSide: BorderSide.none,
+                    ),
+                    fillColor: Colors.white,
+                    filled: true,
+                  ),
                 ),
-              ),
-              onTap: () {
-                showSearch(context: context, delegate: CustomSearchDelegate());
-              },
-            ),
-          ),
+              )),
           SizedBox(height: 10.0),
           Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance.collection('products').snapshots(),
-              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (!snapshot.hasData) {
+            child: FutureBuilder<List<QueryDocumentSnapshot>>(
+              future: _futureServices,
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<QueryDocumentSnapshot>> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
                 }
 
-                final services = snapshot.data!.docs;
+                final services = snapshot.data ?? [];
                 return ListView.builder(
                   itemCount: services.length,
                   itemBuilder: (BuildContext context, int index) {
@@ -82,79 +116,6 @@ class ProductScreen1 extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-
-class CustomSearchDelegate extends SearchDelegate{
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return [
-      IconButton(onPressed: () {
-        query = '';
-      }, icon: const Icon(Icons.clear))
-    ];
-  }
-
-  @override
-  Widget buildLeading(BuildContext context) {
-    return IconButton(onPressed: () {
-      close(context, null);
-    }, icon: const Icon(Icons.arrow_back));
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: _firestore.collection('products').where('name', isGreaterThanOrEqualTo: query).where('name', isLessThan: query + 'z').snapshots(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        final results = snapshot.data!.docs;
-        return ListView.builder(
-          itemCount: results.length,
-          itemBuilder: (context, index) {
-            final result = results[index];
-            return ListTile(
-              title: Text(result['name']),
-              onTap: () {
-                // do something when the result is tapped
-                //showResults(context);
-              },
-            );
-          },
-        );
-      },
-    );
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: _firestore.collection('products').where('name', isGreaterThanOrEqualTo: query).where('name', isLessThan: query + 'z').snapshots(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        final results = snapshot.data!.docs;
-        return ListView.builder(
-          itemCount: results.length,
-          itemBuilder: (context, index) {
-            final result = results[index];
-            return ListTile(
-              title: Text(result['name']),
-              onTap: () {
-                query = result['name'];
-                showResults(context);
-              },
-            );
-          },
-        );
-      },
     );
   }
 }

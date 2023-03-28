@@ -8,27 +8,11 @@ class AccountDetailsPage extends StatefulWidget {
 
 class _AccountDetailsPageState extends State<AccountDetailsPage> {
   final CollectionReference _adminDetailsRef =
-  FirebaseFirestore.instance.collection('admin_details');
+  FirebaseFirestore.instance.collection('admin_users');
   TextEditingController _nameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _mobileController = TextEditingController();
   TextEditingController _roleController = TextEditingController();
-  TextEditingController _addressController = TextEditingController();
-
-  void updateAdminDetails(DocumentSnapshot doc) async {
-    await _adminDetailsRef.doc(doc.id).update({
-      'name': _nameController.text,
-      'email': _emailController.text,
-      'mobile': _mobileController.text,
-      'role': _roleController.text,
-      'address': _addressController.text,
-    });
-    _nameController.clear();
-    _emailController.clear();
-    _mobileController.clear();
-    _roleController.clear();
-    _addressController.clear();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,97 +26,34 @@ class _AccountDetailsPageState extends State<AccountDetailsPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 16.0),
-            StreamBuilder<QuerySnapshot>(
-              stream: _adminDetailsRef.snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  final adminDocs = snapshot.data!.docs;
-                  return Expanded(
-                    child: ListView.builder(
-                      itemCount: adminDocs.length,
-                      itemBuilder: (context, index) {
-                        var admin = adminDocs[index];
-                        return ListTile(
-                          leading: Text(admin['role']),
-                          title: Text(admin['name']),
-                          subtitle: Text(admin['email']),
-                          trailing: IconButton(
-                            icon: Icon(Icons.edit),
-                            onPressed: () {
-                              _nameController.text = admin['name'];
-                              _emailController.text = admin['email'];
-                              _mobileController.text = admin['mobile'];
-                              _roleController.text = admin['role'];
-                              _addressController.text = admin['address'];
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text('Update Admin Details'),
-                                    content: SingleChildScrollView(
-                                      child: ListBody(
-                                        children: <Widget>[
-                                          TextField(
-                                            controller: _nameController,
-                                            decoration: InputDecoration(
-                                              labelText: 'Name',
-                                            ),
-                                          ),
-                                          TextField(
-                                            controller: _emailController,
-                                            decoration: InputDecoration(
-                                              labelText: 'Email',
-                                            ),
-                                          ),
-                                          TextField(
-                                            controller: _mobileController,
-                                            decoration: InputDecoration(
-                                              labelText: 'Mobile',
-                                            ),
-                                          ),
-                                          TextField(
-                                            controller: _roleController,
-                                            decoration: InputDecoration(
-                                              labelText: 'Role',
-                                            ),
-                                          ),
-                                          TextField(
-                                            controller: _addressController,
-                                            decoration: InputDecoration(
-                                              labelText: 'Address',
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        child: Text('Cancel'),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                      TextButton(
-                                        child: Text('Update'),
-                                        onPressed: () {
-                                          updateAdminDetails(admin);
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            },
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                } else {
-                  return CircularProgressIndicator();
-                }
-              },
+            Flexible(
+              child: SingleChildScrollView(
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: _adminDetailsRef.snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      final adminDocs = snapshot.data!.docs;
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        physics: ClampingScrollPhysics(),
+                        itemCount: adminDocs.length,
+                        itemBuilder: (context, index) {
+                          var admin = adminDocs[index];
+                          return Card(
+                            child: ListTile(
+                              title: Text(admin['name']),
+                              subtitle: Text(admin['email']),
+                              trailing: Text(admin['role']),
+                            ),
+                          );
+                        },
+                      );
+                    } else {
+                      return CircularProgressIndicator();
+                    }
+                  },
+                ),
+              ),
             ),
           ],
         ),

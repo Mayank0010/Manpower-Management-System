@@ -14,6 +14,7 @@ import 'package:manpower_management_app/screens/product_screen1.dart';
 import 'package:manpower_management_app/screens/services.dart';
 import 'package:manpower_management_app/screens/services1.dart';
 import 'package:manpower_management_app/screens/worker_verification.dart';
+import 'package:manpower_management_app/services/edit_profile.dart';
 
 
 class AdminDashboard1 extends StatefulWidget {
@@ -24,31 +25,6 @@ class AdminDashboard1 extends StatefulWidget {
 }
 
 class _AdminDashboard1State extends State<AdminDashboard1> {
-
-  int _currentIndex = 0;
-  String? _role;
-
-  void onTabTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-      _getAdminRole();
-    });
-  }
-
-  void _getAdminRole() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
-          .collection('admin_details')
-          .doc(user.uid)
-          .get();
-      if (docSnapshot.exists) {
-        setState(() {
-          _role = docSnapshot['role'];
-        });
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +94,7 @@ class _AdminDashboard1State extends State<AdminDashboard1> {
                   // Then close the drawer
                   Navigator.push(context, MaterialPageRoute(builder:
                   //(context) => AdminRegister()
-                      (context) => AccountsPage()
+                      (context) => EditProfile()
                   ));
                 },
               ),
@@ -219,84 +195,59 @@ class _AdminDashboard1State extends State<AdminDashboard1> {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 16),
-            _buildScrollableList(
-              items: [
-                'Order 1',
-                'Order 2',
-                'Order 3',
-                'Order 4',
-                'Order 5',
-                'Order 6',
-              ],
+            StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance.collection('service_booking').orderBy('serviceTitle', descending: true).limit(6).snapshots(),
+              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (!snapshot.hasData) {
+                  return CircularProgressIndicator();
+                }
+                return _buildScrollableList(
+                  items: snapshot.data!.docs.map((doc) => 'Title: ${doc['serviceTitle']} \nPrice: ${doc['price']}').toList(),
+                );
+              },
             ),
             SizedBox(height: 32),
             Text(
               'Top Services',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 16),
-            _buildScrollableList(
-              items: [
-                'Service 1',
-                'Service 2',
-                'Service 3',
-                'Service 4',
-                'Service 5',
-                'Service 6',
-              ],
+            StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance.collection('services').orderBy('name', descending: true).limit(6).snapshots(),
+              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (!snapshot.hasData) {
+                  return CircularProgressIndicator();
+                }
+                return _buildScrollableList(
+                  items: snapshot.data!.docs.map((doc) => 'Name: ${doc['name']}\nPrice: ${doc['price']}').toList(),
+                );
+              },
             ),
             SizedBox(height: 32),
             Text(
               'Top Products',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 16),
-            _buildScrollableList(
-              items: [
-                'Product 1',
-                'Product 2',
-                'Product 3',
-                'Product 4',
-                'Product 5',
-                'Product 6',
-              ],
+            SizedBox(height: 16), 
+            StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance.collection('products').orderBy('name', descending: true).limit(6).snapshots(),
+              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (!snapshot.hasData) {
+                  return CircularProgressIndicator();
+                }
+                return _buildScrollableList(
+                  items: snapshot.data!.docs.map((doc) => 'Name: ${doc['name']}\nPrice: ${doc['price']}').toList(),
+                );
+                },
             ),
           ],
         ),
       ),
-
-      bottomNavigationBar: BottomNavigationBar(
-        fixedColor: Colors.amber,
-        backgroundColor: Colors.white,
-        type: BottomNavigationBarType.fixed,
-        onTap: onTabTapped,
-        currentIndex: _currentIndex,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle, color: Colors.orangeAccent,),
-            label: 'Profile',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home, color: Colors.orangeAccent,),
-            label: 'Services',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart, color: Colors.orangeAccent,),
-            label: 'Products',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.receipt, color: Colors.orangeAccent,),
-            label: 'Orders',
-          ),
-        ],
-      ),
-
     );
   }
 
   Widget _buildCard({required String title, required String value}) {
     return Card(
-      color: Color(0xffFBA013),
+      color: Color(0xffF89669),
       child: Padding(
         padding: EdgeInsets.all(16),
         child: Column(
@@ -315,7 +266,7 @@ class _AdminDashboard1State extends State<AdminDashboard1> {
   }
 
   Widget _buildScrollableList({required List<String> items}) {
-    return Container(
+    return SizedBox(
       height: 150,
       child: ListView.builder(
         itemCount: items.length,
@@ -325,7 +276,7 @@ class _AdminDashboard1State extends State<AdminDashboard1> {
             color: Colors.white60,
             margin: EdgeInsets.only(right: 16),
             child: Card(
-              color: Color(0xffFBA013),
+              color: Color(0xffF89669),
               child: Padding(
                 padding: EdgeInsets.all(16),
                 child: Text(items[index], style: TextStyle(color: Colors.white)),

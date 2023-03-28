@@ -20,6 +20,7 @@ class _AdminLoginState extends State<AdminLogin> {
 
   @override
   Widget build(BuildContext context) {
+    FocusNode myFocusNode = new FocusNode();
     return Container(
       decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -75,13 +76,17 @@ class _AdminLoginState extends State<AdminLogin> {
                               children: [
                                 TextFormField(
                                   controller: emailController,
-                                  style: TextStyle(color: Colors.black),
+                                  style: TextStyle(color: Colors.white),
                                   decoration: InputDecoration(
                                       filled: true,
+                                      fillColor: Colors.transparent,
                                       labelText: "Email",
+                                      labelStyle: TextStyle(
+                                          color: myFocusNode.hasFocus ? Colors.blueGrey : Colors.black
+                                      ),
                                       prefixIcon: Icon(Icons.email),
                                       border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
+                                        borderRadius: BorderRadius.circular(12),
                                       )
                                   ),
                                   validator: (value) {
@@ -97,9 +102,14 @@ class _AdminLoginState extends State<AdminLogin> {
                           TextFormField(
                             controller: passwordController,
                             obscureText: isObscure,
+                            style: TextStyle(color: Colors.white),
                             decoration: InputDecoration(
                                 filled: true,
+                                fillColor: Colors.transparent,
                                 labelText: "Password",
+                                labelStyle: TextStyle(
+                                    color: myFocusNode.hasFocus ? Colors.blueGrey : Colors.black
+                                ),
                                 suffixIcon: IconButton(
                                   onPressed: () {
                                     setState(() {
@@ -114,7 +124,7 @@ class _AdminLoginState extends State<AdminLogin> {
                                 prefixIcon: IconButton(
                                     onPressed: () {}, icon: Icon(Icons.lock)),
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(12),
                                 )),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
