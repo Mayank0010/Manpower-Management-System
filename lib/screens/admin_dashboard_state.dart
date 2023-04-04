@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:manpower_management_app/authentication/admin_login.dart';
 import 'package:manpower_management_app/screens/accounts_page.dart';
+import 'package:manpower_management_app/screens/accounts_page_district.dart';
+import 'package:manpower_management_app/screens/accounts_page_state.dart';
 import 'package:manpower_management_app/screens/available_workers.dart';
 import 'package:manpower_management_app/screens/customers.dart';
 import 'package:manpower_management_app/screens/orders_page.dart';
@@ -10,42 +12,21 @@ import 'package:manpower_management_app/screens/payment_history.dart';
 import 'package:manpower_management_app/screens/product-page.dart';
 import 'package:manpower_management_app/screens/product_page.dart';
 import 'package:manpower_management_app/screens/product_screen.dart';
+import 'package:manpower_management_app/screens/product_screen1.dart';
 import 'package:manpower_management_app/screens/services.dart';
+import 'package:manpower_management_app/screens/services1.dart';
 import 'package:manpower_management_app/screens/worker_verification.dart';
 import 'package:manpower_management_app/services/edit_profile.dart';
-import 'package:manpower_management_app/services/products_services.dart';
 
 
-class AdminDashboard extends StatefulWidget {
-  const AdminDashboard({Key? key}) : super(key: key);
+class AdminDashboardState extends StatefulWidget {
+  const AdminDashboardState({Key? key}) : super(key: key);
 
   @override
-  State<AdminDashboard> createState() => _AdminDashboardState();
+  State<AdminDashboardState> createState() => _AdminDashboardStateState();
 }
 
-class _AdminDashboardState extends State<AdminDashboard> {
-  String? _role;
-
-  void onTabTapped(int index) {
-    setState(() {
-      _getAdminRole();
-    });
-  }
-
-  void _getAdminRole() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
-          .collection('admin_details')
-          .doc(user.uid)
-          .get();
-      if (docSnapshot.exists) {
-        setState(() {
-          _role = docSnapshot['role'];
-        });
-      }
-    }
-  }
+class _AdminDashboardStateState extends State<AdminDashboardState> {
 
   @override
   Widget build(BuildContext context) {
@@ -56,8 +37,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
         ),),
       ),
         actions: [
-          IconButton(
-              onPressed: () {
+          IconButton(onPressed: () {
             showSearch(context: context, delegate: CustomSearchDelegate());
           },
               icon: const Icon(Icons.search, color: Colors.white,)),
@@ -116,35 +96,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   // Then close the drawer
                   Navigator.push(context, MaterialPageRoute(builder:
                   //(context) => AdminRegister()
-                      (context) => EditProfile()
-                  ));
-                },
-              ),
-              ListTile(
-                leading: Icon(
-                  Icons.domain_verification,
-                  size: 22,
-                ),
-                title: const Text('Workers', style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Roboto'),),
-                onTap: () {
-                  // Update the state of the app
-                  // Then close the drawer
-                  Navigator.push(context, MaterialPageRoute(builder:
-                      (context) => AvailableWorkersWidget()
-                  ));
-                },
-              ),
-              ListTile(
-                leading: Icon(
-                  Icons.account_circle,
-                  size: 22,
-                ),
-                title: const Text('Customers', style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Roboto'),),
-                onTap: () {
-                  // Update the state of the app
-                  // Then close the drawer
-                  Navigator.push(context, MaterialPageRoute(builder:
-                      (context) => CustomerDetails()
+                      (context) => EditProfileStates()
                   ));
                 },
               ),
@@ -159,7 +111,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   // Then close the drawer
                   Navigator.push(context, MaterialPageRoute(builder:
                   //(context) => AdminRegister()
-                      (context) => ProductScreen()
+                      (context) => ProductScreen1()
                   ));
                 },
               ),
@@ -173,21 +125,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   // Update the state of the app
                   // Then close the drawer
                   Navigator.push(context, MaterialPageRoute(builder:
-                      (context) => service()
-                  ));
-                },
-              ),
-              ListTile(
-                leading: Icon(
-                  Icons.settings_suggest,
-                  size: 22,
-                ),
-                title: const Text('Suggest Products/Services', style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Roboto'),),
-                onTap: () {
-                  // Update the state of the app
-                  // Then close the drawer
-                  Navigator.push(context, MaterialPageRoute(builder:
-                      (context) => ProductsAndServicesScreen()
+                      (context) => service1()
                   ));
                 },
               ),
@@ -311,7 +249,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
   Widget _buildCard({required String title, required String value}) {
     return Card(
-      color: Color(0xffFBA013),
+      color: Color(0xffF89669),
       child: Padding(
         padding: EdgeInsets.all(16),
         child: Column(
@@ -330,7 +268,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
   }
 
   Widget _buildScrollableList({required List<String> items}) {
-    return Container(
+    return SizedBox(
       height: 150,
       child: ListView.builder(
         itemCount: items.length,
@@ -340,7 +278,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
             color: Colors.white60,
             margin: EdgeInsets.only(right: 16),
             child: Card(
-              color: Color(0xffFBA013),
+              color: Color(0xffF89669),
               child: Padding(
                 padding: EdgeInsets.all(16),
                 child: Text(items[index], style: TextStyle(color: Colors.white)),

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class Orders extends StatefulWidget {
@@ -6,76 +7,36 @@ class Orders extends StatefulWidget {
 }
 
 class _OrdersState extends State<Orders> {
-  final List<Map<String, dynamic>> orders = [
-    {
-      'date': '2022-03-08',
-      'price': '59',
-      'services': 'Car wash, oil change',
-      'products': 'Engine oil, air filter',
-      'discount': '10% off',
-      'customer' : 'Alice',
-      'worker' : 'Bob',
-    },
-    {
-      'date': '2022-03-07',
-      'price': '65',
-      'services': 'Haircut',
-      'products': '',
-      'discount': '',
-      'customer' : 'Alice',
-      'worker' : 'Bob',
-    },
-    {
-      'date': '2022-03-06',
-      'price': '129',
-      'services': 'Massage, facial',
-      'products': '',
-      'discount': '20% off',
-      'customer' : 'Alice',
-      'worker' : 'Bob',
-    },
-    {
-      'date': '2022-01-12',
-      'price': '1000',
-      'services': 'Pest Control',
-      'products': '',
-      'discount': '',
-      'customer' : 'Alice',
-      'worker' : 'Bob',
-    },
-    {
-      'date': '2023-03-15',
-      'price': '505',
-      'services': 'Cleaning',
-      'products': '',
-      'discount': '',
-      'customer' : 'Alice',
-      'worker' : 'Bob',
-    },
-    {
-      'date': '2023-02-04',
-      'price': '350',
-      'services': 'Plumbing',
-      'products': '',
-      'discount': '',
-      'customer' : 'Alice',
-      'worker' : 'Bob',
-    },
-  ];
-
-  List<Map<String, dynamic>> filteredOrders = [];
-
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
+  List<Map<String, dynamic>> _filteredOrders = [];
 
   @override
   void initState() {
     super.initState();
-    filteredOrders = orders;
+    _filteredOrders = [];
+    _fetchOrders();
   }
 
-  void _filterOrders(value) {
+  void _fetchOrders() async {
+    final QuerySnapshot<Map<String, dynamic>> snapshot =
+    await FirebaseFirestore.instance.collection('service_booking').get();
+
     setState(() {
-      filteredOrders = orders.where((order) => order['services'].toLowerCase().contains(value.toLowerCase())).toList();
+      _filteredOrders = snapshot.docs.map((doc) => doc.data()).toList();
+    });
+  }
+
+  void _filterOrders(String value) {
+    setState(() {
+      _filteredOrders = _filteredOrders
+          .where((order) =>
+      order['serviceTitle']
+          .toLowerCase()
+          .contains(value.toLowerCase()) ||
+          order['userAddress']
+              .toLowerCase()
+              .contains(value.toLowerCase()))
+          .toList();
     });
   }
 
@@ -90,87 +51,93 @@ class _OrdersState extends State<Orders> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
-                controller: _searchController,
-                onChanged: (value) => _filterOrders(value),
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15),
-                  suffixIcon: Icon(Icons.search),
-                  hintText: 'Search for order',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                    borderSide: BorderSide.none,
-                  ),
-                  fillColor: Colors.white,
-                  filled: true,
+              controller: _searchController,
+              onChanged: (value) => _filterOrders(value),
+              decoration: InputDecoration(
+                contentPadding:
+                const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15),
+                suffixIcon: Icon(Icons.search),
+                hintText: 'Search for order',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                  borderSide: BorderSide.none,
                 ),
+                fillColor: Colors.white,
+                filled: true,
               ),
             ),
+          ),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListView.builder(
-                itemCount: filteredOrders.length,
-                itemBuilder: (ctx, index) {
-                  return Card(
-                    child: ListTile(
-                      leading: Text(
-                        '${filteredOrders[index]['price']}',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+            child: ListView.builder(
+              itemCount: _filteredOrders.length,
+              itemBuilder: (ctx, index) {
+                final order = _filteredOrders[index];
+                return Card(
+                  child: Column(
+                    children: [
+                      ListTile(
+                        title: Text(
+                          '${order['serviceTitle']}',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Price: \$${order['price']}',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            Text(
+                              'Date: ${order['selectedDate']}',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            Text(
+                              'Time: ${order['selectedTime']}',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            Text(
+                              'Offer: ${order['selectedOffer']}',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            Text(
+                              'Address: ${order['userAddress']}',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            Text(
+                              'Email: ${order['userEmail']}',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      title: Text(
-                        filteredOrders[index]['services'],
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Divider(
+                        color: Colors.grey,
                       ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Date: ${filteredOrders[index]['date']}',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          Text(
-                            'Products: ${filteredOrders[index]['products']}',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          Text(
-                            'Discount: ${filteredOrders[index]['discount']}',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          Text(
-                            'Customer: ${filteredOrders[index]['customer']}',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          Text(
-                            'Worker: ${filteredOrders[index]['worker']}',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
+                    ],
+                  ),
+                );
+              },
             ),
           ),
         ],

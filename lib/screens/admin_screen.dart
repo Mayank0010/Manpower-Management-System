@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:manpower_management_app/screens/admin_dashboard.dart';
-import 'package:manpower_management_app/screens/admin_dashboard1.dart';
+import 'package:manpower_management_app/screens/admin_dashboard_country.dart';
+import 'package:manpower_management_app/screens/admin_dashboard_district.dart';
+import 'package:manpower_management_app/screens/admin_dashboard_state.dart';
 
 class AdminScreen extends StatefulWidget {
   const AdminScreen({Key? key}) : super(key: key);
@@ -53,7 +55,7 @@ class _AdminScreenState extends State<AdminScreen> {
 
             final adminRole = snapshot.data!.get('role');
             final adminName = snapshot.data!.get('name');
-            final availableRoles = ['Local Administrator', 'District Administrator', 'State Administrator'];
+            final availableRoles = ['Local Administrator', 'District Administrator', 'State Administrator', 'Country Administrator'];
 
             if (!availableRoles.contains(adminRole)) {
               return Text('You do not have permission to access this page.');
@@ -127,7 +129,7 @@ class _AdminScreenState extends State<AdminScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => AdminDashboard1()),
+                                  builder: (context) => AdminDashboardDistrict()),
                             );
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -157,7 +159,7 @@ class _AdminScreenState extends State<AdminScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => AdminDashboard1()),
+                                  builder: (context) => AdminDashboardState()),
                             );
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -186,7 +188,7 @@ class _AdminScreenState extends State<AdminScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => AdminDashboard1()),
+                                  builder: (context) => AdminDashboardCountry()),
                             );
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(

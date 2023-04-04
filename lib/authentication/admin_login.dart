@@ -93,6 +93,9 @@ class _AdminLoginState extends State<AdminLogin> {
                                     if (value == null || value.isEmpty) {
                                       return 'Please enter email';
                                     }
+                                    if (!value!.contains('@')) {
+                                      return 'Please enter a valid email address';
+                                    }
                                     return null;
                                   },
                                 ),
@@ -129,6 +132,9 @@ class _AdminLoginState extends State<AdminLogin> {
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter password';
+                              }
+                              if (value!.length < 6) {
+                                return 'Password must be at least 6 characters long';
                               }
                               return null;
                             },
@@ -281,10 +287,6 @@ class _AdminLoginState extends State<AdminLogin> {
         Navigator.pop(context);
       }
     }
-
     //navigatorKey.currentState!.popUntil((route) => route.isFirst);
   }
 }
-
-
-

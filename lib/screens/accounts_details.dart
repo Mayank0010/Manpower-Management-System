@@ -14,6 +14,12 @@ class _AccountDetailsPageState extends State<AccountDetailsPage> {
   TextEditingController _mobileController = TextEditingController();
   TextEditingController _roleController = TextEditingController();
 
+  List<String> _roleOrder = [    'Country Administrator',    'State Administrator',    'District Administrator',    'Local Administrator'  ];
+
+  int _getRoleWeight(String role) {
+    return _roleOrder.indexOf(role);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +38,12 @@ class _AccountDetailsPageState extends State<AccountDetailsPage> {
                   stream: _adminDetailsRef.snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      final adminDocs = snapshot.data!.docs;
+                      List<QueryDocumentSnapshot> adminDocs = snapshot.data!.docs;
+                      adminDocs.sort((doc1, doc2) {
+                        int weight1 = _getRoleWeight(doc1['role']);
+                        int weight2 = _getRoleWeight(doc2['role']);
+                        return weight1.compareTo(weight2);
+                      });
                       return ListView.builder(
                         shrinkWrap: true,
                         physics: ClampingScrollPhysics(),

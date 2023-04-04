@@ -5,14 +5,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:manpower_management_app/authentication/signup1.dart';
 import 'package:manpower_management_app/screens/accounts_details.dart';
 
-class EditProfile extends StatefulWidget {
+class EditProfileDistrict extends StatefulWidget {
   @override
-  _EditProfileState createState() => _EditProfileState();
+  _EditProfileDistrictState createState() => _EditProfileDistrictState();
 }
 
-class _EditProfileState extends State<EditProfile> {
+class _EditProfileDistrictState extends State<EditProfileDistrict> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
@@ -22,7 +23,6 @@ class _EditProfileState extends State<EditProfile> {
   final TextEditingController _roleController = TextEditingController();
   final TextEditingController _stateController = TextEditingController();
   final TextEditingController _pincodeController = TextEditingController();
-  final TextEditingController _areaController = TextEditingController();
   File? _image;
   //bool _passwordVisible = false;
 
@@ -42,8 +42,8 @@ class _EditProfileState extends State<EditProfile> {
     _roleController.text = userData['role'];
     _stateController.text = userData['state'] ?? '';
     _pincodeController.text = userData['pincode'] ?? '';
-    _areaController.text = userData['area'] ?? '';
   }
+
 
   Future<void> _getImage(ImageSource source) async {
     final pickedFile = await ImagePicker().pickImage(source: source);
@@ -102,12 +102,22 @@ class _EditProfileState extends State<EditProfile> {
           PopupMenuButton(
             itemBuilder: (context) => [
               PopupMenuItem(
+                child: Text("Create Local Admin"),
+                value: "create_admin",
+              ),
+              PopupMenuItem(
                 child: Text("Show All Admins"),
                 value: "show_admins",
               ),
             ],
             onSelected: (value) {
-              if (value == "show_admins") {
+              if (value == "create_admin") {
+                // TODO: implement create state admin functionality
+                Navigator.push(context, MaterialPageRoute(builder:
+                    (context) => SignupPage()
+                ));
+
+              } else if (value == "show_admins") {
                 // TODO: implement show all admins functionality
                 Navigator.push(context, MaterialPageRoute(builder:
                     (context) => AccountDetailsPage()
@@ -212,13 +222,6 @@ class _EditProfileState extends State<EditProfile> {
                */
               SizedBox(height: 10.0),
               TextFormField(
-                controller: _areaController,
-                decoration: InputDecoration(
-                  labelText: 'Area',
-                ),
-              ),
-              SizedBox(height: 10.0),
-              TextFormField(
                 controller: _pincodeController,
                 decoration: InputDecoration(
                   labelText: 'Pincode',
@@ -247,7 +250,6 @@ class _EditProfileState extends State<EditProfile> {
                           'email': _emailController.text,
                           'mobile': _mobileController.text,
                           'role': _roleController.text,
-                          'area': _areaController.text,
                           'pincode': _pincodeController.text,
                           'state': _stateController.text,
                           'profile_picture': imageUrl,

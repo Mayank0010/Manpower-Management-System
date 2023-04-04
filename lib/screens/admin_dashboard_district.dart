@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:manpower_management_app/authentication/admin_login.dart';
 import 'package:manpower_management_app/screens/accounts_page.dart';
+import 'package:manpower_management_app/screens/accounts_page_district.dart';
 import 'package:manpower_management_app/screens/available_workers.dart';
 import 'package:manpower_management_app/screens/customers.dart';
 import 'package:manpower_management_app/screens/orders_page.dart';
@@ -17,14 +18,14 @@ import 'package:manpower_management_app/screens/worker_verification.dart';
 import 'package:manpower_management_app/services/edit_profile.dart';
 
 
-class AdminDashboard1 extends StatefulWidget {
-  const AdminDashboard1({Key? key}) : super(key: key);
+class AdminDashboardDistrict extends StatefulWidget {
+  const AdminDashboardDistrict({Key? key}) : super(key: key);
 
   @override
-  State<AdminDashboard1> createState() => _AdminDashboard1State();
+  State<AdminDashboardDistrict> createState() => _AdminDashboardDistrictState();
 }
 
-class _AdminDashboard1State extends State<AdminDashboard1> {
+class _AdminDashboardDistrictState extends State<AdminDashboardDistrict> {
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +95,7 @@ class _AdminDashboard1State extends State<AdminDashboard1> {
                   // Then close the drawer
                   Navigator.push(context, MaterialPageRoute(builder:
                   //(context) => AdminRegister()
-                      (context) => EditProfile()
+                      (context) => EditProfileDistrict()
                   ));
                 },
               ),

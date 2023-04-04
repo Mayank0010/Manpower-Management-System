@@ -108,6 +108,9 @@ class _AdminRegisterState extends State<AdminRegister> {
                                     if (value == null || value.isEmpty) {
                                       return 'Please enter name';
                                     }
+                                    if (value!.length < 2) {
+                                      return 'Name must be at least 2 characters long';
+                                    }
                                     return null;
                                   },
                                 ),
@@ -133,6 +136,9 @@ class _AdminRegisterState extends State<AdminRegister> {
                                     if (value == null || value.isEmpty) {
                                       return 'Please enter email';
                                     }
+                                    if (!value!.contains('@')) {
+                                      return 'Please enter a valid email address';
+                                    }
                                     return null;
                                   },
                                 ),
@@ -157,6 +163,9 @@ class _AdminRegisterState extends State<AdminRegister> {
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return 'Please enter mobile number';
+                                    }
+                                    if (value!.length != 10) {
+                                      return 'Please enter a valid mobile number';
                                     }
                                     return null;
                                   },
@@ -219,6 +228,9 @@ class _AdminRegisterState extends State<AdminRegister> {
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return 'Please enter password';
+                                    }
+                                    if (value!.length < 6) {
+                                      return 'Password must be at least 6 characters long';
                                     }
                                     return null;
                                   },
@@ -310,11 +322,26 @@ class _AdminRegisterState extends State<AdminRegister> {
         ));
       });
     } on FirebaseAuthException catch(e) {
-      if(emailController.text.isEmpty || passwordController.text.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Enter your email or password!!')));
-        Navigator.pop(context);
+      String errorMessage = 'Signup failed: ';
+      if (e.code == 'weak-password') {
+        errorMessage += 'The password provided is too weak.';
+      } else if (e.code == 'email-already-in-use') {
+        errorMessage += 'The account already exists for that email.';
+      } else if (e.code == 'invalid-email') {
+        errorMessage += 'The email address is invalid.';
+      } else {
+        errorMessage += 'An error occurred, please try again later.';
       }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage),
+          duration: Duration(seconds: 3),
+        ),
+      );
+        Navigator.pop(context);
+    }
+    catch (e) {
+      print(e);
     }
   }
 }
