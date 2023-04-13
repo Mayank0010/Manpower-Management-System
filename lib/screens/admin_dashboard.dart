@@ -1,18 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:manpower_management_app/authentication/admin_login.dart';
-import 'package:manpower_management_app/screens/accounts_page.dart';
 import 'package:manpower_management_app/screens/available_workers.dart';
 import 'package:manpower_management_app/screens/customers.dart';
 import 'package:manpower_management_app/screens/orders_page.dart';
 import 'package:manpower_management_app/screens/payment_history.dart';
-import 'package:manpower_management_app/screens/product-page.dart';
-import 'package:manpower_management_app/screens/product_page.dart';
 import 'package:manpower_management_app/screens/product_screen.dart';
 import 'package:manpower_management_app/screens/services.dart';
-import 'package:manpower_management_app/screens/worker_verification.dart';
+import 'package:manpower_management_app/services/admin_contact.dart';
 import 'package:manpower_management_app/services/edit_profile.dart';
+import 'package:manpower_management_app/services/notification_page.dart';
 import 'package:manpower_management_app/services/products_services.dart';
 
 
@@ -63,7 +60,11 @@ class _AdminDashboardState extends State<AdminDashboard> {
               icon: const Icon(Icons.search, color: Colors.white,)),
           IconButton(
             icon: Icon(Icons.notifications, color: Colors.white,),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder:
+                  (context) => NotificationsPage()
+              ));
+            },
           ),
         ],
         leading: Builder(
@@ -115,7 +116,6 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   // Update the state of the app
                   // Then close the drawer
                   Navigator.push(context, MaterialPageRoute(builder:
-                  //(context) => AdminRegister()
                       (context) => EditProfile()
                   ));
                 },
@@ -158,7 +158,6 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   // Update the state of the app
                   // Then close the drawer
                   Navigator.push(context, MaterialPageRoute(builder:
-                  //(context) => AdminRegister()
                       (context) => ProductScreen()
                   ));
                 },
@@ -193,6 +192,20 @@ class _AdminDashboardState extends State<AdminDashboard> {
               ),
               ListTile(
                 leading: Icon(
+                  Icons.contact_page,
+                  size: 22,
+                ),
+                title: const Text('Contact', style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Roboto'),),
+                onTap: () {
+                  // Update the state of the app
+                  // Then close the drawer
+                  Navigator.push(context, MaterialPageRoute(builder:
+                      (context) => ContactPage()
+                  ));
+                },
+              ),
+              ListTile(
+                leading: Icon(
                   Icons.room_service,
                   size: 22,
                 ),
@@ -219,6 +232,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   ));
                 },
               ),
+              /*
               ListTile(
                 leading: Icon(
                   Icons.settings,
@@ -231,6 +245,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   Navigator.pop(context);
                 },
               ),
+               */
             ],
           ),
         ),

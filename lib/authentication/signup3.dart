@@ -51,6 +51,12 @@ class _SignupPage2State extends State<SignupPage2> {
         'password': hashedPassword,
       });
 
+      // Clear the form after signup
+      _nameController.clear();
+      _emailController.clear();
+      _mobileController.clear();
+      _passwordController.clear();
+
       // Send a text message with the login credentials
       TwilioFlutter twilioFlutter = TwilioFlutter(
         accountSid: 'AC0c0e16fcdf859334bcd6d07347109234',
@@ -63,12 +69,6 @@ class _SignupPage2State extends State<SignupPage2> {
         messageBody: message,
       );
 
-
-      // Clear the form after signup
-      _nameController.clear();
-      _emailController.clear();
-      _mobileController.clear();
-      _passwordController.clear();
 
       // Show a snackbar message to indicate success
       ScaffoldMessenger.of(context).showSnackBar(

@@ -53,6 +53,12 @@ class _SignupPageState extends State<SignupPage> {
         'password': hashedPassword,
       });
 
+      // Clear the form after signup
+      _nameController.clear();
+      _emailController.clear();
+      _mobileController.clear();
+      _passwordController.clear();
+
       // Send a text message with the login credentials
       TwilioFlutter twilioFlutter = TwilioFlutter(
         accountSid: 'AC0c0e16fcdf859334bcd6d07347109234',
@@ -77,13 +83,6 @@ class _SignupPageState extends State<SignupPage> {
       await send(message, smtpServer);
 
        */
-
-
-      // Clear the form after signup
-      _nameController.clear();
-      _emailController.clear();
-      _mobileController.clear();
-      _passwordController.clear();
 
       // Show a snackbar message to indicate success
       ScaffoldMessenger.of(context).showSnackBar(
@@ -117,7 +116,9 @@ class _SignupPageState extends State<SignupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Local Admin Signup')),
+      appBar: AppBar(title: Text('Local Admin Signup'),
+        backgroundColor: Color(0xffF89669),
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -203,6 +204,9 @@ class _SignupPageState extends State<SignupPage> {
                       _signupUser();
                     }
                   },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xffF89669),
+                  ),
                   child: Text('Signup', style: TextStyle(color: Colors.white),),
                 ),
               ],

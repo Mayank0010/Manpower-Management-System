@@ -317,6 +317,11 @@ class _AdminRegisterState extends State<AdminRegister> {
                   "role": roleController.text,
                   "password": hashedPassword,
             });
+        nameController.clear();
+        emailController.clear();
+        mobileController.clear();
+        roleController.clear();
+        passwordController.clear();
         Navigator.push(context, MaterialPageRoute(builder:
             (context) => AdminScreen()
         ));

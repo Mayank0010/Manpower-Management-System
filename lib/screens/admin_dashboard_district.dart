@@ -1,21 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:manpower_management_app/authentication/admin_login.dart';
-import 'package:manpower_management_app/screens/accounts_page.dart';
+import 'package:charts_flutter_new/flutter.dart' as charts;
 import 'package:manpower_management_app/screens/accounts_page_district.dart';
-import 'package:manpower_management_app/screens/available_workers.dart';
-import 'package:manpower_management_app/screens/customers.dart';
 import 'package:manpower_management_app/screens/orders_page.dart';
+import 'package:manpower_management_app/screens/orders_page1.dart';
 import 'package:manpower_management_app/screens/payment_history.dart';
-import 'package:manpower_management_app/screens/product-page.dart';
-import 'package:manpower_management_app/screens/product_page.dart';
-import 'package:manpower_management_app/screens/product_screen.dart';
+import 'package:manpower_management_app/screens/payment_history1.dart';
 import 'package:manpower_management_app/screens/product_screen1.dart';
-import 'package:manpower_management_app/screens/services.dart';
 import 'package:manpower_management_app/screens/services1.dart';
-import 'package:manpower_management_app/screens/worker_verification.dart';
-import 'package:manpower_management_app/services/edit_profile.dart';
+import 'package:manpower_management_app/services/workers_district.dart';
 
 
 class AdminDashboardDistrict extends StatefulWidget {
@@ -26,6 +19,40 @@ class AdminDashboardDistrict extends StatefulWidget {
 }
 
 class _AdminDashboardDistrictState extends State<AdminDashboardDistrict> {
+  late List<charts.Series> _chartData;
+
+
+  @override
+  void initState() {
+    super.initState();
+    _chartData = [];
+    _generateChartData();
+  }
+
+
+  List<charts.Series> _generateChartData() {
+    var data = [
+      {"date": DateTime(2022, 11, 11), "orders": 20},
+      {"date": DateTime(2022, 11, 12), "orders": 15},
+      {"date": DateTime(2022, 11, 13), "orders": 30},
+      {"date": DateTime(2022, 11, 14), "orders": 25},
+      {"date": DateTime(2022, 11, 15), "orders": 35},
+      {"date": DateTime(2022, 11, 16), "orders": 10},
+      {"date": DateTime(2022, 11, 17), "orders": 20},
+    ];
+    _chartData.add(
+      charts.Series<Map<String, dynamic>, DateTime>(
+        id: 'Orders',
+        data: data,
+        domainFn: (datum, index) => datum['date'] as DateTime,
+        measureFn: (datum, index) => datum['orders'] as int,
+        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+        labelAccessorFn: (datum, index) => '${datum['orders']}',
+      ),
+    );
+
+    return _chartData;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +62,7 @@ class _AdminDashboardDistrictState extends State<AdminDashboardDistrict> {
           color: Colors.white,
         ),),
       ),
+        backgroundColor: Color(0xffF89669),
         actions: [
           IconButton(onPressed: () {
             showSearch(context: context, delegate: CustomSearchDelegate());
@@ -130,6 +158,20 @@ class _AdminDashboardDistrictState extends State<AdminDashboardDistrict> {
               ),
               ListTile(
                 leading: Icon(
+                  Icons.work,
+                  size: 22,
+                ),
+                title: const Text('Available Workers', style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Roboto'),),
+                onTap: () {
+                  // Update the state of the app
+                  // Then close the drawer
+                  Navigator.push(context, MaterialPageRoute(builder:
+                      (context) => WorkerListScreen1()
+                  ));
+                },
+              ),
+              ListTile(
+                leading: Icon(
                   Icons.room_service,
                   size: 22,
                 ),
@@ -138,7 +180,7 @@ class _AdminDashboardDistrictState extends State<AdminDashboardDistrict> {
                   // Update the state of the app
                   // Then close the drawer
                   Navigator.push(context, MaterialPageRoute(builder:
-                      (context) => Orders()
+                      (context) => Orders1()
                   ));
                 },
               ),
@@ -152,7 +194,7 @@ class _AdminDashboardDistrictState extends State<AdminDashboardDistrict> {
                   // Update the state of the app
                   // Then close the drawer
                   Navigator.push(context, MaterialPageRoute(builder:
-                      (context) => PaymentHistoryList()
+                      (context) => PaymentHistoryList1()
                   ));
                 },
               ),
@@ -208,38 +250,15 @@ class _AdminDashboardDistrictState extends State<AdminDashboardDistrict> {
               },
             ),
             SizedBox(height: 32),
-            Text(
-              'Top Services',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance.collection('services').orderBy('name', descending: true).limit(6).snapshots(),
-              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (!snapshot.hasData) {
-                  return CircularProgressIndicator();
-                }
-                return _buildScrollableList(
-                  items: snapshot.data!.docs.map((doc) => 'Name: ${doc['name']}\nPrice: ${doc['price']}').toList(),
-                );
-              },
-            ),
-            SizedBox(height: 32),
-            Text(
-              'Top Products',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 16), 
-            StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance.collection('products').orderBy('name', descending: true).limit(6).snapshots(),
-              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (!snapshot.hasData) {
-                  return CircularProgressIndicator();
-                }
-                return _buildScrollableList(
-                  items: snapshot.data!.docs.map((doc) => 'Name: ${doc['name']}\nPrice: ${doc['price']}').toList(),
-                );
-                },
-            ),
+            Center(
+              child: ElevatedButton(
+                  onPressed: _generateChartData,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xffF89669),
+                ),
+                  child: Text('Check Orders', style: TextStyle(color: Colors.white),),
+              ),
+            )
           ],
         ),
       ),

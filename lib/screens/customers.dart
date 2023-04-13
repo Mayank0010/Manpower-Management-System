@@ -7,30 +7,10 @@ class CustomerDetails extends StatefulWidget {
 
 class _CustomerDetailsState extends State<CustomerDetails> {
   final List<Map<String, dynamic>> customerList = [
-    {
-      'name': 'Bob',
-      'email': 'bob@example.com',
-      'mobile': '555-5678',
-      'photo': 'https://via.placeholder.com/150'
-    },
-    {
-      'name': 'Alice',
-      'email': 'alice@example.com',
-      'mobile': '555-1234',
-      'photo': 'https://via.placeholder.com/150'
-    },
-    {
-      'name': 'John',
-      'email': 'john@example.com',
-      'mobile': '555-4321',
-      'photo': 'https://via.placeholder.com/150'
-    },
-    {
-      'name': 'Jane',
-      'email': 'jane@example.com',
-      'mobile': '555-8765',
-      'photo': 'https://via.placeholder.com/150'
-    },
+    {      'name': 'Bob',      'email': 'bob@example.com',      'mobile': '555-5678',      'age': 25,      'address': '123 Main St',      'pincode': '12345',      'state': 'CA',      'photo': 'https://via.placeholder.com/150'    },
+    {      'name': 'Alice',      'email': 'alice@example.com',      'mobile': '555-1234',      'age': 32,      'address': '456 Oak Ave',      'pincode': '54321',      'state': 'NY',      'photo': 'https://via.placeholder.com/150'    },
+    {      'name': 'John',      'email': 'john@example.com',      'mobile': '555-4321',      'age': 40,      'address': '789 Pine Blvd',      'pincode': '67890',      'state': 'FL',      'photo': 'https://via.placeholder.com/150'    },
+    {      'name': 'Jane',      'email': 'jane@example.com',      'mobile': '555-8765',      'age': 28,      'address': '321 Maple Rd',      'pincode': '09876',      'state': 'TX',      'photo': 'https://via.placeholder.com/150'    },
   ];
 
   List<Map<String, dynamic>> filteredCustomers = [];
@@ -94,8 +74,7 @@ class _CustomerDetailsState extends State<CustomerDetails> {
                   return InkWell(
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                        builder: (_) =>
-                            CustomerDetailsPage(customer: customer),
+                        builder: (_) => CustomerDetailsPage(customer: customer),
                       ));
                     },
                     child: Card(
@@ -105,7 +84,7 @@ class _CustomerDetailsState extends State<CustomerDetails> {
                         ),
                         title: Text(customer['name']),
                         subtitle: Text(customer['email']),
-                        trailing: Text(customer['mobile']),
+                            trailing: Text(customer['mobile']),
                       ),
                     ),
                   );
@@ -151,6 +130,26 @@ class CustomerDetailsPage extends StatelessWidget {
             SizedBox(height: 16.0),
             Text(
               'Mobile: ${customer['mobile']}',
+              style: TextStyle(fontSize: 18.0),
+            ),
+            SizedBox(height: 16.0),
+            Text(
+              'Age: ${customer['age']}',
+              style: TextStyle(fontSize: 18.0),
+            ),
+            SizedBox(height: 16.0),
+            Text(
+              'Address: ${customer['address']}',
+              style: TextStyle(fontSize: 18.0),
+            ),
+            SizedBox(height: 16.0),
+            Text(
+              'Pincode: ${customer['pincode']}',
+              style: TextStyle(fontSize: 18.0),
+            ),
+            SizedBox(height: 16.0),
+            Text(
+              'State: ${customer['state']}',
               style: TextStyle(fontSize: 18.0),
             ),
           ],

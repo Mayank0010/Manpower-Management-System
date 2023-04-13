@@ -8,7 +8,9 @@ import 'package:manpower_management_app/screens/accounts_page_state.dart';
 import 'package:manpower_management_app/screens/available_workers.dart';
 import 'package:manpower_management_app/screens/customers.dart';
 import 'package:manpower_management_app/screens/orders_page.dart';
+import 'package:manpower_management_app/screens/orders_page1.dart';
 import 'package:manpower_management_app/screens/payment_history.dart';
+import 'package:manpower_management_app/screens/payment_history1.dart';
 import 'package:manpower_management_app/screens/product-page.dart';
 import 'package:manpower_management_app/screens/product_page.dart';
 import 'package:manpower_management_app/screens/product_screen.dart';
@@ -17,6 +19,7 @@ import 'package:manpower_management_app/screens/services.dart';
 import 'package:manpower_management_app/screens/services1.dart';
 import 'package:manpower_management_app/screens/worker_verification.dart';
 import 'package:manpower_management_app/services/edit_profile.dart';
+import 'package:manpower_management_app/services/workers_state.dart';
 
 
 class AdminDashboardState extends StatefulWidget {
@@ -36,6 +39,7 @@ class _AdminDashboardStateState extends State<AdminDashboardState> {
           color: Colors.white,
         ),),
       ),
+        backgroundColor: Color(0xffF89669),
         actions: [
           IconButton(onPressed: () {
             showSearch(context: context, delegate: CustomSearchDelegate());
@@ -131,6 +135,20 @@ class _AdminDashboardStateState extends State<AdminDashboardState> {
               ),
               ListTile(
                 leading: Icon(
+                  Icons.work,
+                  size: 22,
+                ),
+                title: const Text('Available Workers', style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Roboto'),),
+                onTap: () {
+                  // Update the state of the app
+                  // Then close the drawer
+                  Navigator.push(context, MaterialPageRoute(builder:
+                      (context) => WorkerListScreen()
+                  ));
+                },
+              ),
+              ListTile(
+                leading: Icon(
                   Icons.room_service,
                   size: 22,
                 ),
@@ -139,7 +157,7 @@ class _AdminDashboardStateState extends State<AdminDashboardState> {
                   // Update the state of the app
                   // Then close the drawer
                   Navigator.push(context, MaterialPageRoute(builder:
-                      (context) => Orders()
+                      (context) => Orders1()
                   ));
                 },
               ),
@@ -153,7 +171,7 @@ class _AdminDashboardStateState extends State<AdminDashboardState> {
                   // Update the state of the app
                   // Then close the drawer
                   Navigator.push(context, MaterialPageRoute(builder:
-                      (context) => PaymentHistoryList()
+                      (context) => PaymentHistoryList1()
                   ));
                 },
               ),

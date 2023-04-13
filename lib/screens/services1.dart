@@ -37,6 +37,7 @@ class _service1State extends State<service1> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Services'),
+        backgroundColor: Color(0xffF89669),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

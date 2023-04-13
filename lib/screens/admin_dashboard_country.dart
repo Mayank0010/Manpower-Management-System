@@ -103,35 +103,6 @@ class _AdminDashboardCountryState extends State<AdminDashboardCountry> {
               ),
               ListTile(
                 leading: Icon(
-                  Icons.production_quantity_limits,
-                  size: 22,
-                ),
-                title: const Text('Products', style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Roboto'),),
-                onTap: () {
-                  // Update the state of the app
-                  // Then close the drawer
-                  Navigator.push(context, MaterialPageRoute(builder:
-                  //(context) => AdminRegister()
-                      (context) => ProductScreen1()
-                  ));
-                },
-              ),
-              ListTile(
-                leading: Icon(
-                  Icons.home_repair_service,
-                  size: 22,
-                ),
-                title: const Text('Services', style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Roboto'),),
-                onTap: () {
-                  // Update the state of the app
-                  // Then close the drawer
-                  Navigator.push(context, MaterialPageRoute(builder:
-                      (context) => service1()
-                  ));
-                },
-              ),
-              ListTile(
-                leading: Icon(
                   Icons.room_service,
                   size: 22,
                 ),
@@ -250,7 +221,7 @@ class _AdminDashboardCountryState extends State<AdminDashboardCountry> {
 
   Widget _buildCard({required String title, required String value}) {
     return Card(
-      color: Color(0xffF89669),
+      color: Color(0xffFBA013),
       child: Padding(
         padding: EdgeInsets.all(16),
         child: Column(
@@ -279,7 +250,7 @@ class _AdminDashboardCountryState extends State<AdminDashboardCountry> {
             color: Colors.white60,
             margin: EdgeInsets.only(right: 16),
             child: Card(
-              color: Color(0xffF89669),
+              color: Color(0xffFBA013),
               child: Padding(
                 padding: EdgeInsets.all(16),
                 child: Text(items[index], style: TextStyle(color: Colors.white)),

@@ -3,23 +3,27 @@ import 'package:introduction_screen/introduction_screen.dart';
 import 'package:manpower_management_app/screens/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class IntroScreen extends StatelessWidget {
+class IntroScreen extends StatefulWidget {
   IntroScreen({Key? key}) : super(key: key);
 
+  @override
+  State<IntroScreen> createState() => _IntroScreenState();
+}
+
+class _IntroScreenState extends State<IntroScreen> {
   final List<PageViewModel> pages = [
     PageViewModel(
       title: 'Connect With Everyone',
       body: 'Connect with us to request a service for your home.',
       footer: SizedBox(
-        height: 45,
         width: double.infinity,
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            primary: Colors.orangeAccent,
+            backgroundColor: Colors.orangeAccent,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
-            elevation: 8,
+            elevation: 4,
           ),
           onPressed: () {},
           child: const Text(
@@ -48,15 +52,14 @@ class IntroScreen extends StatelessWidget {
         title: 'Have Access Everywhere!',
         body: 'Leading Home Service and Products Provider',
         footer: SizedBox(
-          height: 45,
           width: double.infinity,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-              primary: Colors.orangeAccent,
+              backgroundColor: Colors.orangeAccent,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
-              elevation: 8,
+              elevation: 4,
             ),
             onPressed: () {},
               child: const Text("Why to wait!", style: TextStyle(fontSize: 20, color: Colors.white70),),
@@ -76,15 +79,13 @@ class IntroScreen extends StatelessWidget {
         title: 'Here We Start!',
         body: 'Customized Services',
         footer: SizedBox(
-          height: 45,
-          width: 300,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.orangeAccent,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20)
                 ),
-                elevation: 8
+                elevation: 4
             ),
             onPressed: () {},
             child: const Text("Let's Start", style: TextStyle(fontSize: 20, color: Colors.white70)),
@@ -106,27 +107,54 @@ class IntroScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('All Type Services', style: TextStyle(fontSize: 20, color: Colors.white70),),
+        backgroundColor: Colors.orangeAccent,
+        title: Text(
+          'All Type Services',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 80, 12, 12),
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
         child: IntroductionScreen(
           pages: pages,
-          dotsDecorator: const DotsDecorator(
-            size: Size(15,15),
-            color: Colors.orange,
-            activeSize: Size.square(20),
-            activeColor: Colors.red,
-          ),
-          showDoneButton: true,
-          done: const Text('Done', style: TextStyle(fontSize: 20),),
+          globalBackgroundColor: Colors.white,
           showSkipButton: true,
-          skip: const Text('Skip', style: TextStyle(fontSize: 20),),
+          skip: Text(
+            'Skip',
+            style: TextStyle(
+              color: Colors.orangeAccent,
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           showNextButton: true,
-          next: const Icon(Icons.arrow_forward, size: 25,),
+          next: const Icon(Icons.arrow_forward, color: Colors.orange, size: 30.0,),
+          showDoneButton: true,
+          done: const Text(
+            'Get Started',
+            style: TextStyle(
+              color: Colors.orange,
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           onDone: () => onDone(context),
           curve: Curves.bounceOut,
+          dotsDecorator: DotsDecorator(
+            activeColor: Colors.orangeAccent,
+            size: Size(8.0, 8.0),
+            color: Colors.grey,
+            activeSize: Size(14.0, 14.0),
+            activeShape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(25.0)),
+            ),
+          ),
+
         ),
       ),
     );

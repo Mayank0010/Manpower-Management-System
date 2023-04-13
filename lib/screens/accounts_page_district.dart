@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:manpower_management_app/authentication/signup1.dart';
+import 'package:manpower_management_app/screens/account_details1.dart';
 import 'package:manpower_management_app/screens/accounts_details.dart';
 
 class EditProfileDistrict extends StatefulWidget {
@@ -24,11 +25,12 @@ class _EditProfileDistrictState extends State<EditProfileDistrict> {
   final TextEditingController _stateController = TextEditingController();
   final TextEditingController _pincodeController = TextEditingController();
   File? _image;
-  //bool _passwordVisible = false;
+  String? _profileImageUrl;
 
   @override
   void initState() {
     super.initState();
+    _getProfileImage();
     getUserData();
   }
 
@@ -54,6 +56,16 @@ class _EditProfileDistrictState extends State<EditProfileDistrict> {
     }
   }
 
+  Future<void> _getProfileImage() async {
+    final ref = _storage.ref().child(
+        'profile_pictures/${_auth.currentUser!.uid}');
+    final url = await ref.getDownloadURL();
+    print('Profile image URL: $url');
+    setState(() {
+      _profileImageUrl = url;
+    });
+  }
+
   Future<String> _uploadImageToStorage() async {
     if (_image != null) {
       final ref = _storage.ref().child(
@@ -61,6 +73,9 @@ class _EditProfileDistrictState extends State<EditProfileDistrict> {
       final task = ref.putFile(_image!);
       final snapshot = await task.whenComplete(() {});
       final url = await snapshot.ref.getDownloadURL();
+      setState(() {
+        _profileImageUrl = url;
+      });
       return url;
     }
     return '';
@@ -98,6 +113,7 @@ class _EditProfileDistrictState extends State<EditProfileDistrict> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Profile'),
+        backgroundColor: Color(0xffF89669),
         actions: [
           PopupMenuButton(
             itemBuilder: (context) => [
@@ -120,7 +136,7 @@ class _EditProfileDistrictState extends State<EditProfileDistrict> {
               } else if (value == "show_admins") {
                 // TODO: implement show all admins functionality
                 Navigator.push(context, MaterialPageRoute(builder:
-                    (context) => AccountDetailsPage()
+                    (context) => AccountDetailsPage1()
                 ));
               }
             },
@@ -159,15 +175,53 @@ class _EditProfileDistrictState extends State<EditProfileDistrict> {
                     },
                   );
                 },
-                child: CircleAvatar(
-                  radius: 70,
-                  backgroundImage: _image != null ? FileImage(_image!) : null,
-                  child: _image == null
-                      ? Icon(
-                    Icons.camera_alt,
-                    size: 40,
-                  )
-                      : null,
+                child: Stack(
+                  children: [
+                    Container(
+                      width: 140.0,
+                      height: 140.0,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.orange[200],
+                      ),
+                      child: _profileImageUrl != null
+                          ? ClipOval(
+                        child: Image.network(
+                          _profileImageUrl!,
+                          width: 100.0,
+                          height: 100.0,
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                          : _image != null
+                          ? ClipOval(
+                        child: Image.file(
+                          _image!,
+                          width: 100.0,
+                          height: 100.0,
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                          : Icon(
+                        Icons.camera_alt,
+                        size: 40,
+                      ),
+                    ),
+                    Positioned(
+                      right: 6,
+                      bottom: 10,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                        ),
+                        child: Icon(
+                          Icons.edit,
+                          color: Colors.orange,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               SizedBox(height: 10.0),
@@ -175,13 +229,22 @@ class _EditProfileDistrictState extends State<EditProfileDistrict> {
                 controller: _nameController,
                 decoration: InputDecoration(
                   labelText: 'Name',
+                    prefixIcon: Icon(Icons.account_box),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    )
                 ),
               ),
               SizedBox(height: 10.0),
               TextFormField(
+                enabled: false,
                 controller: _emailController,
                 decoration: InputDecoration(
                   labelText: 'Email',
+                    prefixIcon: Icon(Icons.email),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    )
                 ),
               ),
               SizedBox(height: 10.0),
@@ -189,13 +252,22 @@ class _EditProfileDistrictState extends State<EditProfileDistrict> {
                 controller: _mobileController,
                 decoration: InputDecoration(
                   labelText: 'Mobile',
+                    prefixIcon: Icon(Icons.mobile_friendly),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    )
                 ),
               ),
               SizedBox(height: 10.0),
               TextFormField(
+                enabled: false,
                 controller: _roleController,
                 decoration: InputDecoration(
                   labelText: 'Role',
+                    prefixIcon: Icon(Icons.message),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    )
                 ),
               ),
 /*
@@ -225,6 +297,10 @@ class _EditProfileDistrictState extends State<EditProfileDistrict> {
                 controller: _pincodeController,
                 decoration: InputDecoration(
                   labelText: 'Pincode',
+                    prefixIcon: Icon(Icons.pin),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    )
                 ),
               ),
               SizedBox(height: 10.0),
@@ -232,6 +308,10 @@ class _EditProfileDistrictState extends State<EditProfileDistrict> {
                 controller: _stateController,
                 decoration: InputDecoration(
                   labelText: 'State',
+                    prefixIcon: Icon(Icons.my_location),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    )
                 ),
               ),
               SizedBox(height: 16.0),
@@ -258,10 +338,11 @@ class _EditProfileDistrictState extends State<EditProfileDistrict> {
                         ScaffoldMessenger.of(context)
                             .showSnackBar(SnackBar(
                           content: Text('Changes Saved!!'),
-                          backgroundColor: Colors.orange,
-
                         ));
                       },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xffF89669),
+                      ),
                       child: Text('Save Changes', style: TextStyle(color: Colors.white),),
                     ),
                   ),
@@ -271,6 +352,9 @@ class _EditProfileDistrictState extends State<EditProfileDistrict> {
                       onPressed: () {
                         _showChangePasswordDialog();
                       },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xffF89669),
+                      ),
                       child: Text(
                         'Change Password',
                         style: TextStyle(color: Colors.white),

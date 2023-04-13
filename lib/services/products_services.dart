@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+class Worker {
+  final String name;
+  final String occupation;
+
+  Worker({required this.name, required this.occupation});
+}
+
+final List<Worker> workers = [  Worker(name: 'John', occupation: 'Plumber'),  Worker(name: 'Alice', occupation: 'Electrician'),  Worker(name: 'Bob', occupation: 'Carpenter'),];
+
 class ProductsAndServicesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -17,14 +26,14 @@ class ProductsAndServicesScreen extends StatelessWidget {
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10),
-            ProductList(),
+            ProductList(occupation: 'Plumber'),
             SizedBox(height: 20),
             Text(
               'Services',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10),
-            ServiceList(),
+            ServiceList(occupation: 'Plumber'),
             SizedBox(height: 20),
           ],
         ),
@@ -34,6 +43,10 @@ class ProductsAndServicesScreen extends StatelessWidget {
 }
 
 class ProductList extends StatelessWidget {
+  final String occupation;
+
+  ProductList({required this.occupation});
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
@@ -44,9 +57,25 @@ class ProductList extends StatelessWidget {
           children: snapshot.data!.docs.map((doc) {
             return ListTile(
               title: Text(doc['name']),
-              trailing: Text('\$${doc['price']}'),
+              trailing: Text('\Rs. ${doc['price']}'),
               onTap: () {
-                // Do something when the item is tapped
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text(doc['name']),
+                      content: Text('Product: ${doc['name']}\nPrice: \Rs. ${doc['price']}'),
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Text('OK'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
             );
           }).toList(),
@@ -57,6 +86,10 @@ class ProductList extends StatelessWidget {
 }
 
 class ServiceList extends StatelessWidget {
+  final String occupation;
+
+  ServiceList({required this.occupation});
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
@@ -67,9 +100,25 @@ class ServiceList extends StatelessWidget {
           children: snapshot.data!.docs.map((doc) {
             return ListTile(
               title: Text(doc['name']),
-              trailing: Text('\$${doc['price']}'),
+              trailing: Text('\Rs. ${doc['price']}'),
               onTap: () {
-                // Do something when the item is tapped
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text(doc['name']),
+                      content: Text('Service: ${doc['name']}\nPrice: \Rs. ${doc['price']}'),
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Text('OK'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
             );
           }).toList(),

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class AccountDetailsPage extends StatefulWidget {
+class AccountDetailsPage1 extends StatefulWidget {
   @override
-  _AccountDetailsPageState createState() => _AccountDetailsPageState();
+  _AccountDetailsPage1State createState() => _AccountDetailsPage1State();
 }
 
-class _AccountDetailsPageState extends State<AccountDetailsPage> {
+class _AccountDetailsPage1State extends State<AccountDetailsPage1> {
   final CollectionReference _adminDetailsRef =
   FirebaseFirestore.instance.collection('admin_users');
   TextEditingController _nameController = TextEditingController();
@@ -25,6 +25,7 @@ class _AccountDetailsPageState extends State<AccountDetailsPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Account Details'),
+        backgroundColor: Color(0xffF89669),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

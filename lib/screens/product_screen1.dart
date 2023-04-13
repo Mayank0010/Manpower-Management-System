@@ -36,6 +36,7 @@ class _ProductScreen1State extends State<ProductScreen1> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Products'),
+        backgroundColor: Color(0xffF89669),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
