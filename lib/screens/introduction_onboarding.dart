@@ -15,9 +15,44 @@ class _IntroScreenState extends State<IntroScreen> {
     PageViewModel(
       title: 'Connect With Everyone',
       body: 'Connect with us to request a service for your home.',
-      footer: SizedBox(
-        width: double.infinity,
-        child: ElevatedButton(
+      footer: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.orangeAccent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          elevation: 4,
+        ),
+        onPressed: () {},
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+          child: Text(
+            "Let's Go",
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.white70,
+            ),
+          ),
+        ),
+      ),
+      image: FittedBox(
+        fit: BoxFit.cover,
+        child: Image.asset(
+          'assets/images/pest.png',
+        ),
+      ),
+      decoration: const PageDecoration(
+        titleTextStyle: TextStyle(
+          fontSize: 25.0,
+          fontWeight: FontWeight.bold,
+          fontFamily: 'Roboto',
+        ),
+      ),
+    ),
+    PageViewModel(
+        title: 'Have Access Everywhere!',
+        body: 'Leading Home Service and Products Provider',
+        footer: ElevatedButton(
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.orangeAccent,
             shape: RoundedRectangleBorder(
@@ -26,73 +61,62 @@ class _IntroScreenState extends State<IntroScreen> {
             elevation: 4,
           ),
           onPressed: () {},
-          child: const Text(
-            "Let's Go",
-            style: TextStyle(
-              fontSize: 20,
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ),
-      image: Center(
-        child: Image.asset(
-          'assets/images/pest.png',
-          height: 200,
-        ),
-      ),
-      decoration: const PageDecoration(
-        titleTextStyle: TextStyle(
-          fontSize: 25.0,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    ),
-    PageViewModel(
-        title: 'Have Access Everywhere!',
-        body: 'Leading Home Service and Products Provider',
-        footer: SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.orangeAccent,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            child: Text(
+              "Why to wait!",
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.white70,
               ),
-              elevation: 4,
             ),
-            onPressed: () {},
-              child: const Text("Why to wait!", style: TextStyle(fontSize: 20, color: Colors.white70),),
           ),
         ),
-        image: Center(
-          child: Image.asset('assets/images/paint.png'),
+        image: FittedBox(
+          fit: BoxFit.cover,
+          child: Image.asset(
+            'assets/images/paint.png',
+          ),
         ),
         decoration: const PageDecoration(
             titleTextStyle: TextStyle(
               fontSize: 25.0,
               fontWeight: FontWeight.bold,
+              fontFamily: 'Roboto',
             )
         )
     ),
     PageViewModel(
         title: 'Here We Start!',
         body: 'Customized Services',
-        footer: SizedBox(
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orangeAccent,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20)
-                ),
-                elevation: 4
+        footer: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.orangeAccent,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
             ),
-            onPressed: () {},
-            child: const Text("Let's Start", style: TextStyle(fontSize: 20, color: Colors.white70)),
+            elevation: 4,
+          ),
+          onPressed: () {},
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            child: Text(
+              "Let's Start",
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.white70,
+              ),
+            ),
           ),
         ),
-        image: Center(
-          child: Image.asset('assets/images/electrician.png'),
+        image: AnimatedContainer(
+          duration: const Duration(seconds: 3),
+          curve: Curves.easeInOut,
+          height: 200,
+          width: 200,
+          child: Image.asset(
+            'assets/images/electrician.png',
+          ),
         ),
         decoration: const PageDecoration(
             titleTextStyle: TextStyle(

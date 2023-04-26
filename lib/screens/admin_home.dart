@@ -122,10 +122,7 @@ class AdminHome extends StatelessWidget {
                 title: const Text('Worker Verification'),
                 onTap: () {
                   // Update the state of the app
-                  // Then close the drawer
-                  Navigator.push(context, MaterialPageRoute(builder:
-                      (context) => WorkerVerificationPage()
-                  ));
+                  // Then close the drawer.
                 },
               ),
               ListTile(

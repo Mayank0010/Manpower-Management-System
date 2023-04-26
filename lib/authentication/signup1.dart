@@ -73,16 +73,17 @@ class _SignupPageState extends State<SignupPage> {
 
       /*
       // Send an email to the user with their credentials
-      final smtpServer = gmail(_emailController.text, 'your.password');
-      final message = Message()
-        ..from = Address('your.email@gmail.com', 'Your Name')
+      final smtpServer = gmail('kmayank298@gmail.com', 'menkapradeep');
+      final msg = Message()
+        ..from = Address('kmayank298@gmail.com', 'Administrator')
         ..recipients.add(email)
         ..subject = 'Local Admin Signup - Credentials'
         ..html =
-            '<p>Hello $name,</p><p>Your account has been created with the following credentials:</p><ul><li>Email: $email</li><li>Mobile: $mobile</li><li>Role: $role</li><li>Password: $originalPassword</li></ul><p>Please keep this email safe for future reference.</p>';
-      await send(message, smtpServer);
+            '<p>Hello $name,</p><p>Your account has been created with the following credentials:</p><ul><li>Email: $email</li><li>Mobile: $mobile</li><li>Role: $role</li><li>Password: $_passwordController.text</li></ul><p>Please keep this email safe for future reference.</p>';
+      await send(msg, smtpServer);
 
        */
+
 
       // Show a snackbar message to indicate success
       ScaffoldMessenger.of(context).showSnackBar(

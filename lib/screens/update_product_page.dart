@@ -6,6 +6,8 @@ class UpdateProductPage extends StatefulWidget {
   final String description;
   final String price;
   final String image;
+  final String quantity;
+  final String code;
   final DocumentReference reference;
 
   UpdateProductPage({
@@ -13,6 +15,8 @@ class UpdateProductPage extends StatefulWidget {
     required this.description,
     required this.price,
     required this.image,
+    required this.quantity,
+    required this.code,
     required this.reference,
   });
 
@@ -26,6 +30,8 @@ class _UpdateProductPageState extends State<UpdateProductPage> {
   late TextEditingController _descriptionController;
   late TextEditingController _priceController;
   late TextEditingController _imageController;
+  late TextEditingController _quantityController;
+  late TextEditingController _codeController;
 
   @override
   void initState() {
@@ -34,6 +40,8 @@ class _UpdateProductPageState extends State<UpdateProductPage> {
     _descriptionController = TextEditingController(text: widget.description);
     _priceController = TextEditingController(text: widget.price);
     _imageController = TextEditingController(text: widget.image);
+    _quantityController = TextEditingController(text: widget.quantity);
+    _codeController = TextEditingController(text: widget.code);
   }
 
   @override
@@ -57,19 +65,6 @@ class _UpdateProductPageState extends State<UpdateProductPage> {
                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'Please enter a name';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 16.0),
-              TextFormField(
-                controller: _descriptionController,
-                decoration: InputDecoration(
-                  labelText: 'Description',
-                ),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter a description';
                   }
                   return null;
                 },
@@ -102,6 +97,45 @@ class _UpdateProductPageState extends State<UpdateProductPage> {
                 },
               ),
               SizedBox(height: 16.0),
+              TextFormField(
+                controller: _descriptionController,
+                decoration: InputDecoration(
+                  labelText: 'Description',
+                ),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter a description';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16.0),
+              TextFormField(
+                controller: _quantityController,
+                decoration: InputDecoration(
+                  labelText: 'Quantity',
+                ),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter quantity';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16.0),
+              TextFormField(
+                controller: _codeController,
+                decoration: InputDecoration(
+                  labelText: 'Code',
+                ),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter a code';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
@@ -110,11 +144,13 @@ class _UpdateProductPageState extends State<UpdateProductPage> {
                       'description': _descriptionController.text,
                       'price': _priceController.text,
                       'image': _imageController.text,
+                      'quantity': _quantityController.text,
+                      'code': _codeController.text,
                     });
                     Navigator.pop(context);
                   }
                 },
-                child: Text('Update Product'),
+                child: Text('Update Product', style: TextStyle(color: Colors.white)),
               ),
             ],
           ),
@@ -129,6 +165,8 @@ class _UpdateProductPageState extends State<UpdateProductPage> {
     _descriptionController.dispose();
     _priceController.dispose();
     _imageController.dispose();
+    _quantityController.dispose();
+    _codeController.dispose();
     super.dispose();
   }
 }

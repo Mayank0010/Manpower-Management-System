@@ -11,6 +11,7 @@ class _ServicesPageState extends State<ServicesPage> {
   var priceController = TextEditingController();
   var imageController = TextEditingController();
   var descController = TextEditingController();
+  var codeController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +91,21 @@ class _ServicesPageState extends State<ServicesPage> {
                     maxLines: 2,
                   ),
                   SizedBox(height: 26.0),
+                  TextFormField(
+                    controller: codeController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: 'Code',
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a code';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 26.0),
                   ElevatedButton(
                     onPressed: () {
                       // Add product logic here
@@ -99,6 +115,7 @@ class _ServicesPageState extends State<ServicesPage> {
                           'price': priceController.text,
                           'image': imageController.text,
                           'description': descController.text,
+                          'code': codeController.text,
                         });
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Service added successfully')),
@@ -107,6 +124,7 @@ class _ServicesPageState extends State<ServicesPage> {
                         priceController.clear();
                         imageController.clear();
                         descController.clear();
+                        codeController.clear();
 
                       } catch (error) {
                         ScaffoldMessenger.of(context).showSnackBar(

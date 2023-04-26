@@ -273,19 +273,25 @@ class _AdminLoginState extends State<AdminLogin> {
       Navigator.pop(context);
 
     } on FirebaseAuthException catch(e) {
+      String errorMessage = 'Login failed: ';
       if(e.code == 'user-not-found') {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('No user found with this email!!')));
-        Navigator.pop(context);
+        errorMessage += 'No user found with this email!!';
+      } else if (e.code == 'invalid-email') {
+        errorMessage += 'The email address is invalid.';
       } else if(e.code == 'wrong-password') {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Password did not match!!')));
-        Navigator.pop(context);
+        errorMessage += 'Password did not match!!';
       } else if(emailController.text.isEmpty || passwordController.text.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Enter your email or password!!')));
-        Navigator.pop(context);
+        errorMessage += 'Enter your email or password!!';
+      } else {
+        errorMessage += 'An error occurred, please try again later.';
       }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage),
+          duration: Duration(seconds: 3),
+        ),
+      );
+      Navigator.pop(context);
     }
     //navigatorKey.currentState!.popUntil((route) => route.isFirst);
   }

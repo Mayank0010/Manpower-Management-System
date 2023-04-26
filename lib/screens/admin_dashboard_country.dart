@@ -1,23 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:manpower_management_app/authentication/admin_login.dart';
-import 'package:manpower_management_app/screens/accounts_page.dart';
 import 'package:manpower_management_app/screens/accounts_page_country.dart';
-import 'package:manpower_management_app/screens/accounts_page_district.dart';
-import 'package:manpower_management_app/screens/accounts_page_state.dart';
-import 'package:manpower_management_app/screens/available_workers.dart';
-import 'package:manpower_management_app/screens/customers.dart';
 import 'package:manpower_management_app/screens/orders_page.dart';
 import 'package:manpower_management_app/screens/payment_history.dart';
-import 'package:manpower_management_app/screens/product-page.dart';
-import 'package:manpower_management_app/screens/product_page.dart';
-import 'package:manpower_management_app/screens/product_screen.dart';
-import 'package:manpower_management_app/screens/product_screen1.dart';
-import 'package:manpower_management_app/screens/services.dart';
-import 'package:manpower_management_app/screens/services1.dart';
-import 'package:manpower_management_app/screens/worker_verification.dart';
-import 'package:manpower_management_app/services/edit_profile.dart';
+import 'package:manpower_management_app/services/notification_page.dart';
+import 'package:manpower_management_app/services/products_services.dart';
 
 
 class AdminDashboardCountry extends StatefulWidget {
@@ -28,6 +15,29 @@ class AdminDashboardCountry extends StatefulWidget {
 }
 
 class _AdminDashboardCountryState extends State<AdminDashboardCountry> {
+  var numberOfEntries;
+  var numberOfOrders;
+
+  void getSize() async {
+    FirebaseFirestore.instance.collection('admin_users').snapshots().listen((QuerySnapshot snapshot) {
+      setState(() {
+        numberOfEntries = snapshot.size;
+      });
+    });
+    FirebaseFirestore.instance.collection('service_booking').snapshots().listen((QuerySnapshot snapshot) {
+      setState(() {
+        numberOfOrders = snapshot.size;
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    numberOfEntries = 0;
+    numberOfOrders = 0;
+    getSize();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,13 +48,29 @@ class _AdminDashboardCountryState extends State<AdminDashboardCountry> {
         ),),
       ),
         actions: [
-          IconButton(onPressed: () {
+          /*
+          IconButton(
+              onPressed: () {
             showSearch(context: context, delegate: CustomSearchDelegate());
           },
-              icon: const Icon(Icons.search, color: Colors.white,)),
+              icon: const Icon(Icons.search, color: Colors.white,)
+          ),
+          IconButton(
+            icon: Icon(Icons.home, color: Colors.white,),
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder:
+                  (context) => AdminScreen()
+              ));
+            },
+          ),
+           */
           IconButton(
             icon: Icon(Icons.notifications, color: Colors.white,),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder:
+                  (context) => NotificationsPage()
+              ));
+            },
           ),
         ],
         leading: Builder(
@@ -98,6 +124,20 @@ class _AdminDashboardCountryState extends State<AdminDashboardCountry> {
                   Navigator.push(context, MaterialPageRoute(builder:
                   //(context) => AdminRegister()
                       (context) => EditProfileCountry()
+                  ));
+                },
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.settings_suggest,
+                  size: 22,
+                ),
+                title: const Text('Suggest Products/Services', style: TextStyle(fontWeight: FontWeight.w500, fontFamily: 'Roboto'),),
+                onTap: () {
+                  // Update the state of the app
+                  // Then close the drawer
+                  Navigator.push(context, MaterialPageRoute(builder:
+                      (context) => ProductsAndServicesScreen()
                   ));
                 },
               ),
@@ -158,9 +198,9 @@ class _AdminDashboardCountryState extends State<AdminDashboardCountry> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildCard(title: 'Users', value: '120'),
-                _buildCard(title: 'Employees', value: '15'),
-                _buildCard(title: 'Orders', value: '450'),
+                _buildCard(title: 'Users', value: numberOfEntries.toString()),
+                _buildCard(title: 'Employees', value: numberOfEntries.toString()),
+                _buildCard(title: 'Orders', value: numberOfOrders.toString()),
               ],
             ),
             SizedBox(height: 32),
@@ -176,7 +216,7 @@ class _AdminDashboardCountryState extends State<AdminDashboardCountry> {
                   return CircularProgressIndicator();
                 }
                 return _buildScrollableList(
-                  items: snapshot.data!.docs.map((doc) => 'Title: ${doc['serviceTitle']} \nPrice: ${doc['price']}').toList(),
+                  items: snapshot.data!.docs.map((doc) => '${doc['serviceTitle']} \nPrice: ${doc['price']}').toList(),
                 );
               },
             ),
@@ -185,6 +225,7 @@ class _AdminDashboardCountryState extends State<AdminDashboardCountry> {
               'Top Services',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
+            SizedBox(height: 16),
             StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance.collection('services').orderBy('name', descending: true).limit(6).snapshots(),
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -192,7 +233,7 @@ class _AdminDashboardCountryState extends State<AdminDashboardCountry> {
                   return CircularProgressIndicator();
                 }
                 return _buildScrollableList(
-                  items: snapshot.data!.docs.map((doc) => 'Name: ${doc['name']}\nPrice: ${doc['price']}').toList(),
+                  items: snapshot.data!.docs.map((doc) => '${doc['name']}\nPrice: ${doc['price']}').toList(),
                 );
               },
             ),
@@ -209,7 +250,7 @@ class _AdminDashboardCountryState extends State<AdminDashboardCountry> {
                   return CircularProgressIndicator();
                 }
                 return _buildScrollableList(
-                  items: snapshot.data!.docs.map((doc) => 'Name: ${doc['name']}\nPrice: ${doc['price']}').toList(),
+                  items: snapshot.data!.docs.map((doc) => '${doc['name']}\nPrice: ${doc['price']}').toList(),
                 );
               },
             ),
@@ -220,40 +261,72 @@ class _AdminDashboardCountryState extends State<AdminDashboardCountry> {
   }
 
   Widget _buildCard({required String title, required String value}) {
-    return Card(
-      color: Color(0xffFBA013),
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(title, style: TextStyle(color: Colors.white)),
-            SizedBox(height: 8),
-            Text(
-              value,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+    return Container(
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: Color(0xffFBA013),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            blurRadius: 10,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
             ),
-          ],
-        ),
+          ),
+          SizedBox(height: 16),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildScrollableList({required List<String> items}) {
-    return SizedBox(
-      height: 150,
+    return Container(
+      height: 160,
       child: ListView.builder(
-        itemCount: items.length,
         scrollDirection: Axis.horizontal,
-        itemBuilder: (context, index) {
+        itemCount: items.length,
+        itemBuilder: (BuildContext context, int index) {
           return Container(
-            color: Colors.white60,
+            width: 280,
             margin: EdgeInsets.only(right: 16),
-            child: Card(
+            padding: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
               color: Color(0xffFBA013),
-              child: Padding(
-                padding: EdgeInsets.all(16),
-                child: Text(items[index], style: TextStyle(color: Colors.white)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  blurRadius: 10,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Text(
+              items[index],
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
           );

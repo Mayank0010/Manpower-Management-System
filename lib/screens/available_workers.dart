@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:manpower_management_app/screens/worker_verification.dart';
+import 'package:manpower_management_app/services/verified_workers.dart';
 
 class AvailableWorkersWidget extends StatefulWidget {
   @override
@@ -7,14 +9,26 @@ class AvailableWorkersWidget extends StatefulWidget {
 }
 
 class _AvailableWorkersWidgetState extends State<AvailableWorkersWidget> {
-  List<Map<String, dynamic>> availableWorkers = [    {'name': 'John Doe', 'occupation': 'Plumber'},    {'name': 'Jane Smith', 'occupation': 'Electrician'},    {'name': 'Bob Johnson', 'occupation': 'Carpenter'},    {'name': 'Mary Williams', 'occupation': 'Painter'},    {'name': 'Tom Brown', 'occupation': 'Handyman'},    {'name': 'Samantha Lee', 'occupation': 'Cleaner'},  ];
-
+  List<Map<String, dynamic>> availableWorkers = [];
   List<Map<String, dynamic>> searchedWorkers = [];
 
   @override
   void initState() {
     super.initState();
-    searchedWorkers = List.from(availableWorkers);
+    _fetchWorkers();
+  }
+
+  void _fetchWorkers() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('worker_users').get();
+    List<Map<String, dynamic>> workers = [];
+    querySnapshot.docs.forEach((doc) {
+      Map<String, dynamic> worker = {'name': doc['name'], 'occupation': doc['occupation']};
+      workers.add(worker);
+    });
+    setState(() {
+      availableWorkers = List.from(workers);
+      searchedWorkers = List.from(workers);
+    });
   }
 
   void _filterWorkers(value) {
@@ -31,6 +45,31 @@ class _AvailableWorkersWidgetState extends State<AvailableWorkersWidget> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Workers'),
+        actions: [
+          PopupMenuButton(
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                child: Text("Verified Workers"),
+                value: "verified_workers",
+              ),
+              PopupMenuItem(
+                child: Text("Rejected Workers"),
+                value: "rejected_workers",
+              ),
+            ],
+            onSelected: (value) {
+              if (value == "verified_workers") {
+                // TODO: implement create state admin functionality
+                Navigator.push(context, MaterialPageRoute(builder:
+                    (context) => VerifiedWorkersPage()
+                ));
+
+              } else if (value == "rejected_workers") {
+                // TODO: implement show all functionality
+              }
+            },
+          ),
+        ],
       ),
       body: Column(
         children: <Widget>[
@@ -68,7 +107,8 @@ class _AvailableWorkersWidgetState extends State<AvailableWorkersWidget> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => WorkerVerificationPage(),
+                            builder: (context) => WorkerVerificationPage(name: worker['name'],
+                              occupation: worker['occupation'],),
                           ),
                         );
                       },

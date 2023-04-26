@@ -8,7 +8,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:manpower_management_app/authentication/signup1.dart';
 import 'package:manpower_management_app/authentication/signup2.dart';
 import 'package:manpower_management_app/screens/account_details1.dart';
-import 'package:manpower_management_app/screens/accounts_details.dart';
 
 class EditProfileStates extends StatefulWidget {
   @override

@@ -12,6 +12,8 @@ class _ProductsPageState extends State<ProductsPage> {
   var priceController = TextEditingController();
   var imageController = TextEditingController();
   var descController = TextEditingController();
+  var quantityController = TextEditingController();
+  var codeController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +77,7 @@ class _ProductsPageState extends State<ProductsPage> {
                       return null;
                     },
                   ),
-                 SizedBox(height: 26.0),
+                  SizedBox(height: 26.0),
                   TextFormField(
                     controller: descController,
                     decoration: InputDecoration(
@@ -91,6 +93,36 @@ class _ProductsPageState extends State<ProductsPage> {
                     maxLines: 2,
                   ),
                   SizedBox(height: 26.0),
+                  TextFormField(
+                    controller: quantityController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: 'Quantity',
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a product quantity';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 26.0),
+                  TextFormField(
+                    controller: codeController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: 'Code',
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a code';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 26.0),
                   ElevatedButton(
                     onPressed: () {
                       // Add product logic here
@@ -100,6 +132,8 @@ class _ProductsPageState extends State<ProductsPage> {
                           'price': priceController.text,
                           'image': imageController.text,
                           'description': descController.text,
+                          'quantity': quantityController.text,
+                          'code': codeController.text,
                         });
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Product added successfully')),
@@ -108,6 +142,8 @@ class _ProductsPageState extends State<ProductsPage> {
                         priceController.clear();
                         imageController.clear();
                         descController.clear();
+                        quantityController.clear();
+                        codeController.clear();
                       } catch (error) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Failed to add product')),
@@ -117,8 +153,7 @@ class _ProductsPageState extends State<ProductsPage> {
                     child: Text('Add Product', style: TextStyle(color: Colors.white)),
                   ),
                 ],
-              ),
-            ),
+              ),),
           ),
         ),
       ),

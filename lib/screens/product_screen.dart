@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:manpower_management_app/screens/product_page.dart';
-import 'package:manpower_management_app/screens/service_page.dart';
 import 'package:manpower_management_app/screens/update_product_page.dart';
-import 'package:manpower_management_app/services/search_page.dart';
 
 class ProductScreen extends StatefulWidget {
 
@@ -113,7 +111,10 @@ class _ProductScreenState extends State<ProductScreen> {
                     final price = service['price'];
                     final image = service['image'];
                     final description = service['description'];
+                    final quantity = service['quantity'] ?? '';
+                    final code = service['code'] ?? '';
                     final reference = service.reference;
+
 
                     return GestureDetector(
                       onTap: () {
@@ -133,6 +134,8 @@ class _ProductScreenState extends State<ProductScreen> {
                                           price: price,
                                           image: image,
                                           description: description,
+                                          quantity: quantity,
+                                          code: code,
                                           reference: reference,
                                         )
                                     ));

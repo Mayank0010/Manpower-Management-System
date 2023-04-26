@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -22,19 +23,41 @@ class ProductsAndServicesScreen extends StatelessWidget {
           children: [
             SizedBox(height: 20),
             Text(
-              'Products',
+              'Products and Services',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 10),
-            ProductList(occupation: 'Plumber'),
             SizedBox(height: 20),
-            Text(
-              'Services',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProductCarousel(
+                          occupation: 'Plumber',
+                        ),
+                      ),
+                    );
+                  },
+                  child: Text('Suggest a Product', style: TextStyle(color: Colors.white)),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ServiceCarousel(
+                          occupation: 'Plumber',
+                        ),
+                      ),
+                    );
+                  },
+                  child: Text('Suggest a Service', style: TextStyle(color: Colors.white)),
+                ),
+              ],
             ),
-            SizedBox(height: 10),
-            ServiceList(occupation: 'Plumber'),
-            SizedBox(height: 20),
           ],
         ),
       ),
@@ -42,10 +65,11 @@ class ProductsAndServicesScreen extends StatelessWidget {
   }
 }
 
-class ProductList extends StatelessWidget {
+
+class ProductCarousel extends StatelessWidget {
   final String occupation;
 
-  ProductList({required this.occupation});
+  ProductCarousel({required this.occupation});
 
   @override
   Widget build(BuildContext context) {
@@ -53,28 +77,63 @@ class ProductList extends StatelessWidget {
       stream: FirebaseFirestore.instance.collection('products').snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) return CircularProgressIndicator();
-        return Column(
-          children: snapshot.data!.docs.map((doc) {
-            return ListTile(
-              title: Text(doc['name']),
-              trailing: Text('\Rs. ${doc['price']}'),
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text(doc['name']),
-                      content: Text('Product: ${doc['name']}\nPrice: \Rs. ${doc['price']}'),
-                      actions: <Widget>[
-                        TextButton(
-                          child: const Text('OK'),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ],
+        return CarouselSlider(
+          options: CarouselOptions(
+            height: 500,
+            aspectRatio: 16 / 9,
+            viewportFraction: 0.8,
+            enlargeCenterPage: true,
+            autoPlay: true,
+            autoPlayInterval: Duration(seconds: 5),
+            enableInfiniteScroll: true,
+            onPageChanged: (index, reason) {
+              // TODO: add code to update the position indicator
+            },
+          ),
+          items: snapshot.data!.docs.map((doc) {
+            return Builder(
+              builder: (BuildContext context) {
+                return GestureDetector(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text(doc['name']),
+                          content: Text(
+                              'Product: ${doc['name']}\nPrice: \Rs. ${doc['price']}'),
+                          actions: <Widget>[
+                            TextButton(
+                              child: const Text('OK'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        );
+                      },
                     );
                   },
+                  child: Card(
+                    margin: EdgeInsets.symmetric(horizontal: 5),
+                    child: Container(
+                      height: 400,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(doc['name']),
+                          SizedBox(height: 10),
+                          Image.network(
+                            doc['image'],
+                            height: 300,
+                            width: 300,
+                          ),
+                          SizedBox(height: 10),
+                          Text('\Rs. ${doc['price']}'),
+                        ],
+                      ),
+                    ),
+                  ),
                 );
               },
             );
@@ -85,10 +144,10 @@ class ProductList extends StatelessWidget {
   }
 }
 
-class ServiceList extends StatelessWidget {
+class ServiceCarousel extends StatelessWidget {
   final String occupation;
 
-  ServiceList({required this.occupation});
+  ServiceCarousel({required this.occupation});
 
   @override
   Widget build(BuildContext context) {
@@ -96,28 +155,63 @@ class ServiceList extends StatelessWidget {
       stream: FirebaseFirestore.instance.collection('services').snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) return CircularProgressIndicator();
-        return Column(
-          children: snapshot.data!.docs.map((doc) {
-            return ListTile(
-              title: Text(doc['name']),
-              trailing: Text('\Rs. ${doc['price']}'),
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text(doc['name']),
-                      content: Text('Service: ${doc['name']}\nPrice: \Rs. ${doc['price']}'),
-                      actions: <Widget>[
-                        TextButton(
-                          child: const Text('OK'),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ],
+        return CarouselSlider(
+          options: CarouselOptions(
+            height: 500,
+            aspectRatio: 16 / 9,
+            viewportFraction: 0.8,
+            enlargeCenterPage: true,
+            autoPlay: true,
+            autoPlayInterval: Duration(seconds: 5),
+            enableInfiniteScroll: true,
+            onPageChanged: (index, reason) {
+              // TODO: add code to update the position indicator
+            },
+          ),
+          items: snapshot.data!.docs.map((doc) {
+            return Builder(
+              builder: (BuildContext context) {
+                return GestureDetector(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text(doc['name']),
+                          content: Text(
+                              'Product: ${doc['name']}\nPrice: \Rs. ${doc['price']}'),
+                          actions: <Widget>[
+                            TextButton(
+                              child: const Text('OK'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        );
+                      },
                     );
                   },
+                  child: Card(
+                    margin: EdgeInsets.symmetric(horizontal: 5),
+                    child: Container(
+                      height: 400,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(doc['name']),
+                          SizedBox(height: 10),
+                          Image.network(
+                            doc['image'],
+                            height: 300,
+                            width: 300,
+                          ),
+                          SizedBox(height: 10),
+                          Text('\Rs. ${doc['price']}'),
+                        ],
+                      ),
+                    ),
+                  ),
                 );
               },
             );

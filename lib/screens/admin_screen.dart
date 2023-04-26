@@ -53,9 +53,9 @@ class _AdminScreenState extends State<AdminScreen> {
               return Center(child: CircularProgressIndicator());
             }
 
-            final adminRole = snapshot.data!.get('role');
+            final adminRole = snapshot.data!.get('role').toLowerCase();
             final adminName = snapshot.data!.get('name');
-            final availableRoles = ['Local Administrator', 'District Administrator', 'State Administrator', 'Country Administrator'];
+            final availableRoles = ['local administrator', 'district administrator', 'state administrator', 'country administrator'];
 
             if (!availableRoles.contains(adminRole)) {
               return Text('You do not have permission to access this page.');
@@ -96,7 +96,7 @@ class _AdminScreenState extends State<AdminScreen> {
                           ),
                         ),
                         onTap: () {
-                          if (adminRole == 'Local Administrator') {
+                          if (adminRole == 'local administrator') {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -125,7 +125,7 @@ class _AdminScreenState extends State<AdminScreen> {
                           ),
                         ),
                         onTap: () {
-                          if (adminRole == 'District Administrator') {
+                          if (adminRole == 'district administrator') {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -155,7 +155,7 @@ class _AdminScreenState extends State<AdminScreen> {
                           ),
                         ),
                         onTap: () {
-                          if (adminRole == 'State Administrator') {
+                          if (adminRole == 'state administrator') {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -184,7 +184,7 @@ class _AdminScreenState extends State<AdminScreen> {
                           ),
                         ),
                         onTap: () {
-                          if (adminRole == 'Country Administrator') {
+                          if (adminRole == 'country administrator') {
                             Navigator.push(
                               context,
                               MaterialPageRoute(

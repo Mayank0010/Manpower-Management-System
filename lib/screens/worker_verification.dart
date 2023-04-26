@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:manpower_management_app/services/schedule_interview.dart';
 
-class WorkerVerificationPage extends StatelessWidget {
+class WorkerVerificationPage extends StatefulWidget {
+  String name;
+  String occupation;
+
+  WorkerVerificationPage({required this.name, required this.occupation});
+
+  @override
+  State<WorkerVerificationPage> createState() => _WorkerVerificationPageState();
+}
+
+class _WorkerVerificationPageState extends State<WorkerVerificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -9,8 +19,62 @@ class WorkerVerificationPage extends StatelessWidget {
         title: Text('Worker Verification'),
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          // List of uploaded documents, images, and videos
+          SizedBox(height: 16.0),
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
+                  'Worker Name:',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 18.0,
+                  ),
+                ),
+              ),
+              Text(
+                  widget.name,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 18.0,
+                  ),
+                ),
+            ],
+          ),
+          SizedBox(height: 14.0),
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
+                  'Occupation:',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 18.0,
+                  ),
+                ),
+              ),
+              Text(
+                  widget.occupation,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 18.0,
+                  ),
+                ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'Uploaded Documents, Images, and Videos',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 18.0,
+              ),
+            ),
+          ),
           Expanded(
             child: ListView(
               children: <Widget>[
@@ -22,6 +86,7 @@ class WorkerVerificationPage extends StatelessWidget {
                     // TODO: Open resume document
                   },
                 ),
+                Divider(),
                 ListTile(
                   leading: Icon(Icons.photo),
                   title: Text('Photo ID'),
@@ -30,6 +95,7 @@ class WorkerVerificationPage extends StatelessWidget {
                     // TODO: Open photo ID image
                   },
                 ),
+                Divider(),
                 ListTile(
                   leading: Icon(Icons.video_collection),
                   title: Text('Introduction Video'),
@@ -41,36 +107,40 @@ class WorkerVerificationPage extends StatelessWidget {
               ],
             ),
           ),
-          // Buttons to schedule or reject the worker
-          SizedBox(height: 50.0,),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {
-                    // TODO: Reject worker
-                  },
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red
+          SizedBox(height: 24.0,),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // TODO: Reject worker
+                    },
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red
+                    ),
+                    child: Text('Reject Worker', style: TextStyle(color: Colors.white),),
                   ),
-                  child: Text('Reject Worker', style: TextStyle(color: Colors.white),),
                 ),
-              ),
-              SizedBox(width: 5.0,),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {
-                    // TODO: Schedule interview
-                    Navigator.push(context, MaterialPageRoute(builder:
-                        (context) => InterviewSchedule()
-                    ));
-                  },
-                  child: Text('Schedule Interview', style: TextStyle(color: Colors.white),),
+                SizedBox(width: 16.0,),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // TODO: Schedule interview
+                      Navigator.push(context, MaterialPageRoute(builder:
+                          (context) => InterviewSchedule(name: widget.name,
+                            occupation: widget.occupation,)
+                      ));
+                    },
+                    child: Text('Schedule Interview', style: TextStyle(color: Colors.white),),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
+          SizedBox(height: 24.0,),
         ],
       ),
     );

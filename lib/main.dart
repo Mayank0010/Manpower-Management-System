@@ -10,10 +10,16 @@ void main() {
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
+  static bool isDarkMode = false;
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -22,14 +28,13 @@ class MyApp extends StatelessWidget {
       navigatorKey: navigatorKey,
       theme: ThemeData(
         primarySwatch: Colors.orange,
-        brightness: Brightness.light,
+        brightness: MyApp.isDarkMode ? Brightness.dark : Brightness.light,
       ),
-      /*darkTheme: ThemeData(
+      darkTheme: ThemeData(
         primarySwatch: Colors.blue,
         brightness: Brightness.dark,
       ),
-      */
-      themeMode: ThemeMode.system,
+      themeMode: MyApp.isDarkMode ? ThemeMode.dark : ThemeMode.light,
       home: SplashScreen(),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:manpower_management_app/authentication/admin_login.dart';
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({Key? key}) : super(key: key);
@@ -20,68 +21,91 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       // Show success dialog or navigate to login screen
     } catch (e) {
       setState(() {
-        _errorMessage = 'Error!!';
+        _errorMessage = 'Oops! Something went wrong. Please try again later.';
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xffF89669), Color(0xff27f985)])
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          title: Text('Forgot Password'),
-          automaticallyImplyLeading: false,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Forgot Password'),
+        leading: IconButton(icon:Icon(Icons.arrow_back),
+          onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder:
+                (context) => AdminLogin()
+            ));
+          },
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                SizedBox(height: 150.0,),
-                TextFormField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(hintText: 'Enter email address'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter an email address';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 10.0,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    SizedBox(width: 250.0,),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          _resetPassword();
-                        }
-                      },
-                      child: Text('Continue', style: TextStyle(color: Colors.white),),
-                      autofocus: true,
-                    )
+        elevation: 0,
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xffF89669), Color(0xff27f985)],
+          ),
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    SizedBox(height: 50.0),
+                    Text(
+                      'Enter your email address to reset your password',
+                      style: TextStyle(fontSize: 16.0),
+                    ),
+                    SizedBox(height: 20.0),
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        children: <Widget>[
+                          TextFormField(
+                            controller: _emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            decoration:
+                            InputDecoration(hintText: 'Email Address'),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter an email address';
+                              }
+                              return null;
+                            },
+                          ),
+                          SizedBox(height: 20.0),
+                          ElevatedButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                _resetPassword();
+                              }
+                            },
+                            child: Text('Reset Password'),
+                          ),
+                          if (_errorMessage.isNotEmpty)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 16.0),
+                              child: Text(
+                                _errorMessage,
+                                style: TextStyle(
+                                    color: Colors.red, fontSize: 14.0),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
-                if (_errorMessage.isNotEmpty)
-                  Text(
-                    _errorMessage,
-                    style: TextStyle(color: Colors.red),
-                  ),
-              ],
+              ),
             ),
           ),
         ),

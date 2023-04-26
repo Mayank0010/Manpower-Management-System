@@ -111,6 +111,7 @@ class _serviceState extends State<service> {
                     final price = service['price'];
                     final image = service['image'];
                     final description = service['description'];
+                    final code = service['code'] ?? '';
                     final reference = service.reference;
 
                     return GestureDetector(
@@ -131,6 +132,7 @@ class _serviceState extends State<service> {
                                           price: price,
                                           image: image,
                                           description: description,
+                                          code: code,
                                           reference: reference,
                                         )
                                     ));

@@ -6,6 +6,7 @@ class UpdateServicePage extends StatefulWidget {
   final String description;
   final String price;
   final String image;
+  final String code;
   final DocumentReference reference;
 
   UpdateServicePage({
@@ -13,6 +14,7 @@ class UpdateServicePage extends StatefulWidget {
     required this.description,
     required this.price,
     required this.image,
+    required this.code,
     required this.reference,
   });
 
@@ -26,6 +28,7 @@ class _UpdateServicePageState extends State<UpdateServicePage> {
   late TextEditingController _descriptionController;
   late TextEditingController _priceController;
   late TextEditingController _imageController;
+  late TextEditingController _codeController;
 
   @override
   void initState() {
@@ -34,6 +37,7 @@ class _UpdateServicePageState extends State<UpdateServicePage> {
     _descriptionController = TextEditingController(text: widget.description);
     _priceController = TextEditingController(text: widget.price);
     _imageController = TextEditingController(text: widget.image);
+    _codeController = TextEditingController(text: widget.code);
   }
 
   @override
@@ -57,19 +61,6 @@ class _UpdateServicePageState extends State<UpdateServicePage> {
                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'Please enter a name';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 16.0),
-              TextFormField(
-                controller: _descriptionController,
-                decoration: InputDecoration(
-                  labelText: 'Description',
-                ),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter a description';
                   }
                   return null;
                 },
@@ -102,6 +93,32 @@ class _UpdateServicePageState extends State<UpdateServicePage> {
                 },
               ),
               SizedBox(height: 16.0),
+              TextFormField(
+                controller: _descriptionController,
+                decoration: InputDecoration(
+                  labelText: 'Description',
+                ),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter a description';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16.0),
+              TextFormField(
+                controller: _codeController,
+                decoration: InputDecoration(
+                  labelText: 'Code',
+                ),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter a code';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
@@ -110,11 +127,12 @@ class _UpdateServicePageState extends State<UpdateServicePage> {
                       'description': _descriptionController.text,
                       'price': _priceController.text,
                       'image': _imageController.text,
+                      'code': _codeController.text,
                     });
                     Navigator.pop(context);
                   }
                 },
-                child: Text('Update Service'),
+                child: Text('Update Service', style: TextStyle(color: Colors.white)),
               ),
             ],
           ),
@@ -129,6 +147,7 @@ class _UpdateServicePageState extends State<UpdateServicePage> {
     _descriptionController.dispose();
     _priceController.dispose();
     _imageController.dispose();
+    _codeController.dispose();
     super.dispose();
   }
 }

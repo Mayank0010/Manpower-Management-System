@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CustomerDetails extends StatefulWidget {
   @override
@@ -6,32 +7,32 @@ class CustomerDetails extends StatefulWidget {
 }
 
 class _CustomerDetailsState extends State<CustomerDetails> {
-  final List<Map<String, dynamic>> customerList = [
-    {      'name': 'Bob',      'email': 'bob@example.com',      'mobile': '555-5678',      'age': 25,      'address': '123 Main St',      'pincode': '12345',      'state': 'CA',      'photo': 'https://via.placeholder.com/150'    },
-    {      'name': 'Alice',      'email': 'alice@example.com',      'mobile': '555-1234',      'age': 32,      'address': '456 Oak Ave',      'pincode': '54321',      'state': 'NY',      'photo': 'https://via.placeholder.com/150'    },
-    {      'name': 'John',      'email': 'john@example.com',      'mobile': '555-4321',      'age': 40,      'address': '789 Pine Blvd',      'pincode': '67890',      'state': 'FL',      'photo': 'https://via.placeholder.com/150'    },
-    {      'name': 'Jane',      'email': 'jane@example.com',      'mobile': '555-8765',      'age': 28,      'address': '321 Maple Rd',      'pincode': '09876',      'state': 'TX',      'photo': 'https://via.placeholder.com/150'    },
-  ];
-
-  List<Map<String, dynamic>> filteredCustomers = [];
-
-  TextEditingController searchController = TextEditingController();
+  List<DocumentSnapshot<Map<String, dynamic>>> availableCustomers = [];
+  List<DocumentSnapshot<Map<String, dynamic>>> searchedCustomers = [];
 
   @override
   void initState() {
     super.initState();
-    filteredCustomers = customerList;
+    _fetchCustomers();
   }
 
-  void filterCustomers(String query) {
-    List<Map<String, dynamic>> filteredList = [];
-    customerList.forEach((customer) {
-      if (customer['name'].toLowerCase().contains(query.toLowerCase())) {
-        filteredList.add(customer);
-      }
-    });
+  void _fetchCustomers() async {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance.collection('user_users').get();
     setState(() {
-      filteredCustomers = filteredList;
+      availableCustomers = List.from(querySnapshot.docs);
+      searchedCustomers = List.from(querySnapshot.docs);
+    });
+  }
+
+  void _filterCustomers(String value) {
+    setState(() {
+      searchedCustomers = availableCustomers
+          .where((customer) =>
+          customer
+              .data()!['name']
+              .toLowerCase()
+              .contains(value.toLowerCase()))
+          .toList();
     });
   }
 
@@ -39,21 +40,17 @@ class _CustomerDetailsState extends State<CustomerDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Customer List'),
+        title: Text('Customers'),
       ),
       body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
-              controller: searchController,
-              onChanged: (value) {
-                filterCustomers(value);
-              },
               decoration: InputDecoration(
                 contentPadding:
                 const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15),
-                labelText: 'Search for a customer..',
+                hintText: 'Search for customer..',
                 suffixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(12.0)),
@@ -62,29 +59,31 @@ class _CustomerDetailsState extends State<CustomerDetails> {
                 fillColor: Colors.white,
                 filled: true,
               ),
+              onChanged: (value) => _filterCustomers(value),
             ),
           ),
           Expanded(
-            child: Padding(
+            child: searchedCustomers.isEmpty
+                ? Center(child: Text('No customers found'))
+                : Padding(
               padding: const EdgeInsets.all(8.0),
               child: ListView.builder(
-                itemCount: filteredCustomers.length,
+                itemCount: searchedCustomers.length,
                 itemBuilder: (context, index) {
-                  final customer = filteredCustomers[index];
+                  final customer = searchedCustomers[index].data();
+
                   return InkWell(
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (_) => CustomerDetailsPage(customer: customer),
-                      ));
-                    },
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            CustomerDetailsPage(customer: searchedCustomers[index]),
+                      ),
+                    ),
                     child: Card(
                       child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundImage: NetworkImage(customer['photo']),
-                        ),
-                        title: Text(customer['name']),
-                        subtitle: Text(customer['email']),
-                            trailing: Text(customer['mobile']),
+                        title: Text(customer!['name']),
+                        subtitle: Text(customer!['email']),
+                        trailing: Icon(Icons.arrow_forward),
                       ),
                     ),
                   );
@@ -98,11 +97,40 @@ class _CustomerDetailsState extends State<CustomerDetails> {
   }
 }
 
-
-class CustomerDetailsPage extends StatelessWidget {
-  final Map<String, dynamic> customer;
+class CustomerDetailsPage extends StatefulWidget {
+  final DocumentSnapshot<Map<String, dynamic>> customer;
 
   CustomerDetailsPage({required this.customer});
+
+  @override
+  _CustomerDetailsPageState createState() => _CustomerDetailsPageState();
+}
+
+class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
+  final _formKey = GlobalKey<FormState>();
+
+  late String name;
+  late String email;
+  late String mobile;
+  late String age;
+  late String address;
+  late String state;
+  late String pincode;
+  late String country;
+
+  @override
+  void initState() {
+    super.initState();
+    final customerData = widget.customer.data()!;
+    name = customerData['name'];
+    email = customerData['email'];
+    mobile = customerData['mobile'];
+    age = customerData['age'];
+    address = customerData['address'];
+    state = customerData['state'];
+    pincode = customerData['pincode'];
+    country = customerData['country'];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -110,49 +138,136 @@ class CustomerDetailsPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Customer Details'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              backgroundImage: NetworkImage(customer['photo']),
+      body: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextFormField(
+                  initialValue: name,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    labelText: 'Name',
+                  ),
+                  onSaved: (value) => name = value!,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter a name';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 16.0),
+                TextFormField(
+                  initialValue: email,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    labelText: 'Email',
+                  ),
+                  onSaved: (value) => email = value!,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter an email';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 16.0),
+                TextFormField(
+                  initialValue: mobile,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    labelText: 'Mobile',
+                  ),
+                  onSaved: (value) => mobile = value!,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter a mobile number';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 16.0),
+                TextFormField(
+                  initialValue: age,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    labelText: 'Age',
+                  ),
+                  onSaved: (value) => age = value!,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter an age';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 16.0),
+                TextFormField(
+                  initialValue: address,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    labelText: 'Address',
+                  ),
+                  onSaved: (value) => address = value!,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter an address';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 16.0),
+                TextFormField(
+                  initialValue: state,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    labelText: 'State',
+                  ),
+                  onSaved: (value) => state = value!,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter a state';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 16.0),
+                TextFormField(
+                  initialValue: pincode,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    labelText: 'Pincode',
+                  ),
+                  onSaved: (value) => pincode = value!,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter a pincode';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 16.0),
+                TextFormField(
+                  initialValue: country,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    labelText: 'Country',
+                  ),
+                  onSaved: (value) => country = value!,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter a country';
+                    }
+                    return null;
+                  },
+                ),
+              ],
             ),
-            SizedBox(height: 16.0),
-            Text(
-              customer['name'],
-              style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 16.0),
-            Text(
-              'Email: ${customer['email']}',
-              style: TextStyle(fontSize: 18.0),
-            ),
-            SizedBox(height: 16.0),
-            Text(
-              'Mobile: ${customer['mobile']}',
-              style: TextStyle(fontSize: 18.0),
-            ),
-            SizedBox(height: 16.0),
-            Text(
-              'Age: ${customer['age']}',
-              style: TextStyle(fontSize: 18.0),
-            ),
-            SizedBox(height: 16.0),
-            Text(
-              'Address: ${customer['address']}',
-              style: TextStyle(fontSize: 18.0),
-            ),
-            SizedBox(height: 16.0),
-            Text(
-              'Pincode: ${customer['pincode']}',
-              style: TextStyle(fontSize: 18.0),
-            ),
-            SizedBox(height: 16.0),
-            Text(
-              'State: ${customer['state']}',
-              style: TextStyle(fontSize: 18.0),
-            ),
-          ],
+          ),
         ),
       ),
     );

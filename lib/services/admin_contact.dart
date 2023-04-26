@@ -11,6 +11,7 @@ class _ContactPageState extends State<ContactPage> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _mobileController = TextEditingController();
+  TextEditingController _addressController = TextEditingController();
   late String _userId;
   late FirebaseFirestore _db;
   late User _user;
@@ -25,6 +26,7 @@ class _ContactPageState extends State<ContactPage> {
     _nameController = TextEditingController();
     _emailController = TextEditingController();
     _mobileController = TextEditingController();
+    _addressController = TextEditingController();
   }
 
   Future<void> fetchAdminData() async {
@@ -32,11 +34,16 @@ class _ContactPageState extends State<ContactPage> {
         .collection('admin_users')
         .doc(_userId)
         .get() as DocumentSnapshot<Map<String, dynamic>>;
+    DocumentSnapshot<Map<String, dynamic>> adminDetail = await _db
+        .collection('contact_admin')
+        .doc(_userId)
+        .get() as DocumentSnapshot<Map<String, dynamic>>;
 
     setState(() {
       _nameController.text = adminData['name'];
       _emailController.text = adminData['email'];
       _mobileController.text = adminData['mobile'];
+      _addressController.text = adminDetail['address'] ?? '';
     });
   }
 
@@ -45,9 +52,10 @@ class _ContactPageState extends State<ContactPage> {
       'name': _nameController.text.trim(),
       'email': _emailController.text.trim(),
       'mobile': _mobileController.text.trim(),
+      'address': _addressController.text.trim(),
     });
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Contact information saved')),
+      const SnackBar(content: Text('Contact information saved.')),
     );
   }
 
@@ -76,6 +84,11 @@ class _ContactPageState extends State<ContactPage> {
             TextFormField(
               controller: _mobileController,
               decoration: const InputDecoration(labelText: 'Mobile Number'),
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _addressController,
+              decoration: const InputDecoration(labelText: 'Address'),
             ),
             const SizedBox(height: 16),
             Center(
