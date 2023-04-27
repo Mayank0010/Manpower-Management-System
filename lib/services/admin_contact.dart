@@ -8,10 +8,13 @@ class ContactPage extends StatefulWidget {
 }
 
 class _ContactPageState extends State<ContactPage> {
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _mobileController = TextEditingController();
-  TextEditingController _addressController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _mobileController = TextEditingController();
+  final _addressController = TextEditingController();
+  final _pincodeController = TextEditingController();
+  final _stateController = TextEditingController();
   late String _userId;
   late FirebaseFirestore _db;
   late User _user;
@@ -23,10 +26,6 @@ class _ContactPageState extends State<ContactPage> {
     _db = FirebaseFirestore.instance;
     _userId = _user.uid;
     fetchAdminData();
-    _nameController = TextEditingController();
-    _emailController = TextEditingController();
-    _mobileController = TextEditingController();
-    _addressController = TextEditingController();
   }
 
   Future<void> fetchAdminData() async {
@@ -44,19 +43,25 @@ class _ContactPageState extends State<ContactPage> {
       _emailController.text = adminData['email'];
       _mobileController.text = adminData['mobile'];
       _addressController.text = adminDetail['address'] ?? '';
+      _pincodeController.text = adminData['pincode'] ?? '';
+      _stateController.text = adminData['state'] ?? '';
     });
   }
 
   Future<void> updateContact() async {
-    await _db.collection('contact_admin').doc(_userId).set({
-      'name': _nameController.text.trim(),
-      'email': _emailController.text.trim(),
-      'mobile': _mobileController.text.trim(),
-      'address': _addressController.text.trim(),
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Contact information saved.')),
-    );
+    if (_formKey.currentState!.validate()) {
+      await _db.collection('contact_admin').doc(_userId).set({
+        'name': _nameController.text.trim(),
+        'email': _emailController.text.trim(),
+        'mobile': _mobileController.text.trim(),
+        'address': _addressController.text.trim(),
+        'pincode': _pincodeController.text.trim(),
+        'state': _stateController.text.trim(),
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Contact information saved.')),
+      );
+    }
   }
 
   @override
@@ -67,39 +72,106 @@ class _ContactPageState extends State<ContactPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _nameController,
-              decoration: const InputDecoration(labelText: 'Name'),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _mobileController,
-              decoration: const InputDecoration(labelText: 'Mobile Number'),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _addressController,
-              decoration: const InputDecoration(labelText: 'Address'),
-            ),
-            const SizedBox(height: 16),
-            Center(
-              child: ElevatedButton(
-                onPressed: updateContact,
-                child: const Text('Submit', style: TextStyle(color: Colors.white),),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            children: [
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _nameController,
+                decoration: InputDecoration(
+                  labelText: 'Name',
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(15),),
+                ),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter your name.';
+                  }
+                  return null;
+                },
               ),
-            ),
-          ],
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _emailController,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(15),),
+                ),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter your email address.';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _mobileController,
+                decoration: InputDecoration(
+                  labelText: 'Mobile Number',
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(15),),
+                ),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter your email address.';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _addressController,
+                decoration: InputDecoration(
+                  labelText: 'Address',
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(15),),
+                ),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter your email address.';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _stateController,
+                decoration: InputDecoration(
+                  labelText: 'State',
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(15),),
+                ),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter your email address.';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _pincodeController,
+                decoration: InputDecoration(
+                  labelText: 'Pincode',
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(15),),
+                ),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter your email address.';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              Center(
+                child: ElevatedButton(
+                  onPressed: updateContact,
+                  child: const Text('Submit', style: TextStyle(color: Colors.white),),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
+

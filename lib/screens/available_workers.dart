@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:manpower_management_app/screens/worker_verification.dart';
+import 'package:manpower_management_app/services/rejected_workers.dart';
 import 'package:manpower_management_app/services/verified_workers.dart';
 
 class AvailableWorkersWidget extends StatefulWidget {
@@ -59,13 +60,14 @@ class _AvailableWorkersWidgetState extends State<AvailableWorkersWidget> {
             ],
             onSelected: (value) {
               if (value == "verified_workers") {
-                // TODO: implement create state admin functionality
                 Navigator.push(context, MaterialPageRoute(builder:
                     (context) => VerifiedWorkersPage()
                 ));
 
               } else if (value == "rejected_workers") {
-                // TODO: implement show all functionality
+                Navigator.push(context, MaterialPageRoute(builder:
+                    (context) => RejectedWorkersPage()
+                ));
               }
             },
           ),
@@ -91,7 +93,9 @@ class _AvailableWorkersWidgetState extends State<AvailableWorkersWidget> {
             ),
           ),
           Expanded(
-            child: Padding(
+            child: searchedWorkers.isEmpty
+                ? Center(child: Text('No workers found'))
+                : Padding(
               padding: const EdgeInsets.all(8.0),
               child: ListView.builder(
                 itemCount: searchedWorkers.length,
