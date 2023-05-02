@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:manpower_management_app/services/schedule_interview.dart';
 
 class WorkerVerificationPage extends StatefulWidget {
@@ -12,6 +13,29 @@ class WorkerVerificationPage extends StatefulWidget {
 }
 
 class _WorkerVerificationPageState extends State<WorkerVerificationPage> {
+  String userId = "";
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserId();
+  }
+
+  Future<void> _fetchUserId() async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('worker_users')
+        .where('name', isEqualTo: widget.name)
+        .limit(1)
+        .get();
+
+    if (snapshot.docs.isNotEmpty) {
+      setState(() {
+        userId = snapshot.docs.first.id;
+      });
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,6 +121,15 @@ class _WorkerVerificationPageState extends State<WorkerVerificationPage> {
                 ),
                 Divider(),
                 ListTile(
+                  leading: Icon(Icons.receipt),
+                  title: Text('Criminal Records'),
+                  trailing: Icon(Icons.arrow_forward_ios),
+                  onTap: () {
+                    // TODO: Open resume document
+                  },
+                ),
+                Divider(),
+                ListTile(
                   leading: Icon(Icons.video_collection),
                   title: Text('Introduction Video'),
                   trailing: Icon(Icons.arrow_forward_ios),
@@ -115,8 +148,16 @@ class _WorkerVerificationPageState extends State<WorkerVerificationPage> {
               children: [
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       // TODO: Reject worker
+                      // Push worker details to rejected worker collection
+                      final workerData = {
+                        'name': widget.name,
+                        'occupation': widget.occupation,
+                      };
+                      await FirebaseFirestore.instance
+                          .collection('rejected_workers')
+                          .add(workerData);
                     },
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red
@@ -130,8 +171,11 @@ class _WorkerVerificationPageState extends State<WorkerVerificationPage> {
                     onPressed: () {
                       // TODO: Schedule interview
                       Navigator.push(context, MaterialPageRoute(builder:
-                          (context) => InterviewSchedule(name: widget.name,
-                            occupation: widget.occupation,)
+                          (context) => InterviewSchedule(
+                            name: widget.name,
+                            occupation: widget.occupation,
+                            userId: userId,
+                          )
                       ));
                     },
                     child: Text('Schedule Interview', style: TextStyle(color: Colors.white),),

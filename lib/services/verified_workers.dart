@@ -9,7 +9,7 @@ class VerifiedWorkersPage extends StatelessWidget {
         title: Text('Verified Workers'),
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('worker_users').where('isVerified', isEqualTo: true).snapshots(),
+        stream: FirebaseFirestore.instance.collection('schedule_worker').where('accepted', isEqualTo: true).snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
             return Center(

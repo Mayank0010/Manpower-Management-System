@@ -24,6 +24,7 @@ class _EditProfileDistrictState extends State<EditProfileDistrict> {
   final TextEditingController _roleController = TextEditingController();
   final TextEditingController _stateController = TextEditingController();
   final TextEditingController _pincodeController = TextEditingController();
+  final TextEditingController _areaController = TextEditingController();
   File? _image;
   String? _profileImageUrl;
 
@@ -41,9 +42,10 @@ class _EditProfileDistrictState extends State<EditProfileDistrict> {
     _nameController.text = userData['name'];
     _emailController.text = userData['email'];
     _mobileController.text = userData['mobile'];
-    _roleController.text = userData['role'];
+    _roleController.text = userData['role'].toUpperCase();
     _stateController.text = userData['state'] ?? '';
     _pincodeController.text = userData['pincode'] ?? '';
+    _areaController.text = userData['area'] ?? '';
   }
 
 
@@ -294,6 +296,17 @@ class _EditProfileDistrictState extends State<EditProfileDistrict> {
                */
               SizedBox(height: 10.0),
               TextFormField(
+                controller: _areaController,
+                decoration: InputDecoration(
+                    labelText: 'Address',
+                    prefixIcon: Icon(Icons.location_city),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    )
+                ),
+              ),
+              SizedBox(height: 10.0),
+              TextFormField(
                 controller: _pincodeController,
                 decoration: InputDecoration(
                   labelText: 'Pincode',
@@ -330,6 +343,7 @@ class _EditProfileDistrictState extends State<EditProfileDistrict> {
                           'email': _emailController.text,
                           'mobile': _mobileController.text,
                           'role': _roleController.text,
+                          'area': _areaController.text,
                           'pincode': _pincodeController.text,
                           'state': _stateController.text,
                           'profile_picture': imageUrl,

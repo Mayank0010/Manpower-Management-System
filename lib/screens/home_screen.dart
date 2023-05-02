@@ -24,7 +24,7 @@ class HomeScreen extends StatelessWidget {
             Image.asset('assets/images/im4.png', height: 400, width: 350,),
             SizedBox(height: 30),
             Text(
-              'Manage Services/Products',
+              'Admin Interface',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 28,

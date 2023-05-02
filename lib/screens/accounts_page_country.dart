@@ -23,6 +23,8 @@ class _EditProfileCountryState extends State<EditProfileCountry> {
   final TextEditingController _roleController = TextEditingController();
   final TextEditingController _stateController = TextEditingController();
   final TextEditingController _pincodeController = TextEditingController();
+  final TextEditingController _areaController = TextEditingController();
+  final TextEditingController _countryController = TextEditingController();
   File? _image;
   String? _profileImageUrl;
 
@@ -40,9 +42,11 @@ class _EditProfileCountryState extends State<EditProfileCountry> {
     _nameController.text = userData['name'];
     _emailController.text = userData['email'];
     _mobileController.text = userData['mobile'];
-    _roleController.text = userData['role'];
+    _roleController.text = userData['role'].toUpperCase();
     _stateController.text = userData['state'] ?? '';
     _pincodeController.text = userData['pincode'] ?? '';
+    _areaController.text = userData['area'] ?? '';
+    _countryController.text = userData['country'] ?? '';
   }
 
   Future<void> _getImage(ImageSource source) async {
@@ -308,6 +312,17 @@ class _EditProfileCountryState extends State<EditProfileCountry> {
                */
               SizedBox(height: 10.0),
               TextFormField(
+                controller: _areaController,
+                decoration: InputDecoration(
+                    labelText: 'Address',
+                    prefixIcon: Icon(Icons.location_city),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    )
+                ),
+              ),
+              SizedBox(height: 10.0),
+              TextFormField(
                 controller: _pincodeController,
                 decoration: InputDecoration(
                   labelText: 'Pincode',
@@ -323,6 +338,17 @@ class _EditProfileCountryState extends State<EditProfileCountry> {
                 decoration: InputDecoration(
                   labelText: 'State',
                     prefixIcon: Icon(Icons.my_location),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    )
+                ),
+              ),
+              SizedBox(height: 10.0),
+              TextFormField(
+                controller: _countryController,
+                decoration: InputDecoration(
+                    labelText: 'Country',
+                    prefixIcon: Icon(Icons.add_location),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
                     )
@@ -344,8 +370,10 @@ class _EditProfileCountryState extends State<EditProfileCountry> {
                           'email': _emailController.text,
                           'mobile': _mobileController.text,
                           'role': _roleController.text,
+                          'area': _areaController.text,
                           'pincode': _pincodeController.text,
                           'state': _stateController.text,
+                          'country': _countryController.text,
                           'profile_picture': imageUrl,
                         });
                         ScaffoldMessenger.of(context)

@@ -42,7 +42,7 @@ class _EditProfileState extends State<EditProfile> {
     _nameController.text = userData['name'];
     _emailController.text = userData['email'];
     _mobileController.text = userData['mobile'];
-    _roleController.text = userData['role'];
+    _roleController.text = userData['role'].toUpperCase();
     _stateController.text = userData['state'] ?? '';
     _pincodeController.text = userData['pincode'] ?? '';
     _areaController.text = userData['area'] ?? '';
@@ -286,7 +286,7 @@ class _EditProfileState extends State<EditProfile> {
               TextFormField(
                 controller: _areaController,
                 decoration: InputDecoration(
-                  labelText: 'Area',
+                  labelText: 'Address',
                     prefixIcon: Icon(Icons.location_city),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),

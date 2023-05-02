@@ -41,7 +41,7 @@ class AdminDetailsPage extends StatelessWidget {
               ),
               ListTile(
                 title: Text('Role'),
-                subtitle: Text(adminData['role']),
+                subtitle: Text(adminData['role'].toUpperCase()),
               ),
             ],
           );

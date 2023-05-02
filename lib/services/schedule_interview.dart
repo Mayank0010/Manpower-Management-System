@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:manpower_management_app/services/update_schedule.dart';
 
 class InterviewSchedule extends StatefulWidget {
   final String name;
   final String occupation;
+  final String userId;
 
-  InterviewSchedule({required this.name, required this.occupation});
+  InterviewSchedule({required this.name, required this.occupation, required this.userId});
 
   @override
   _InterviewScheduleState createState() => _InterviewScheduleState();
@@ -16,39 +18,35 @@ class _InterviewScheduleState extends State<InterviewSchedule> {
   TextEditingController _dateController = TextEditingController();
   TextEditingController _timeController = TextEditingController();
   TextEditingController _addressController = TextEditingController();
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _occupationController = TextEditingController();
+  late TextEditingController _nameController;
+  late TextEditingController _occupationController;
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
-  late String _userId;
-  late FirebaseFirestore _db;
-  late User _user;
-
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
+  late User _user = FirebaseAuth.instance.currentUser!;
+  late String _userId  = _user.uid;
   bool _workerAccepted = false;
 
   @override
   void initState() {
     super.initState();
-    _user = FirebaseAuth.instance.currentUser!;
-    _db = FirebaseFirestore.instance;
-    _userId = _user.uid;
+    _nameController  = TextEditingController(text: widget.name);
+    _occupationController = TextEditingController(text: widget.occupation);
     fetchDetails();
   }
 
-  Future<void> fetchDetails() async {
+  void fetchDetails() async {
     DocumentSnapshot<Map<String, dynamic>> adminDetail = await _db
         .collection('schedule_worker')
         .doc(_userId)
         .get() as DocumentSnapshot<Map<String, dynamic>>;
 
     setState(() {
-      _addressController.text = adminDetail['address'] ?? '';
+      _addressController.text = '';
       _selectedDate = adminDetail['date'] != null ? DateTime.parse(adminDetail['date']) : null;
       _selectedTime = adminDetail['time'] != null ? TimeOfDay.fromDateTime(DateTime.parse(adminDetail['time'])) : null;
       _dateController.text = _selectedDate != null ? '${_selectedDate!.year}-${_selectedDate!.month}-${_selectedDate!.day}' : '';
       _timeController.text = _selectedTime != null ? '${_selectedTime!.hour}:${_selectedTime!.minute}' : '';
-      _nameController.text = widget.name;
-      _occupationController.text = widget.occupation;
     });
   }
 
@@ -60,7 +58,7 @@ class _InterviewScheduleState extends State<InterviewSchedule> {
       String formattedTime =
           '${_selectedTime!.hour}:${_selectedTime!.minute}';
 
-      await _db.collection('schedule_worker').doc(_userId).set({
+      await _db.collection('schedule_worker').add({
         'name': _nameController.text.trim(),
         'occupation': _occupationController.text.trim(),
         'date': formattedDate,
@@ -199,18 +197,49 @@ class _InterviewScheduleState extends State<InterviewSchedule> {
               ),
               */
               SizedBox(height: 16),
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    saveDetails();
-                  },
-                  child: Text('Schedule Interview', style: TextStyle(color: Colors.white),),
-                ),
+              Row(
+                children:[
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        saveDetails();
+                      },
+                      child: Text('Schedule Interview', style: TextStyle(color: Colors.white),),
+                    ),
+                  ),
+                  SizedBox(width: 5.0),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder:
+                            (context) => ScheduleUpdate(
+                              name: _nameController.text,
+                              occupation: _occupationController.text,
+                              date: _dateController.text,
+                              time: _timeController.text,
+                              address: _addressController.text,
+                            )
+                        ));
+                      },
+                      child: Text('Update Schedule', style: TextStyle(color: Colors.white),),
+                    ),
+                  ),
+              ],
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _occupationController.dispose();
+    _dateController.dispose();
+    _timeController.dispose();
+    _addressController.dispose();
+    super.dispose();
   }
 }

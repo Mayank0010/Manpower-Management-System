@@ -99,6 +99,14 @@ class _OrdersState extends State<Orders> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
+                        SizedBox(height: 4),
+                        Text(
+                          'Id: ${order['serviceId']}',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
                         SizedBox(height: 8),
                         Text(
                           'Price: \Rs. ${order['price']}',
@@ -125,14 +133,6 @@ class _OrdersState extends State<Orders> {
                         ),
                         SizedBox(height: 4),
                         Text(
-                          'Offer: ${order['selectedOffer']}',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        SizedBox(height: 4),
-                        Text(
                           'Address: ${order['userAddress']}',
                           style: TextStyle(
                             fontSize: 16,
@@ -142,6 +142,14 @@ class _OrdersState extends State<Orders> {
                         SizedBox(height: 4),
                         Text(
                           'Email: ${order['userEmail']}',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          'Assigned Worker: ${order['worker']}',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w400,

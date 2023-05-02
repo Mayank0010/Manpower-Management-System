@@ -19,13 +19,19 @@ class AdminDashboardDistrict extends StatefulWidget {
 }
 
 class _AdminDashboardDistrictState extends State<AdminDashboardDistrict> {
-  var numberOfEntries;
-  var numberOfOrders;
+  var numberOfCustomerEntries = 0;
+  var numberOfWorkerEntries = 0;
+  var numberOfOrders = 0;
 
   void getSize() async {
-    FirebaseFirestore.instance.collection('admin_users').snapshots().listen((QuerySnapshot snapshot) {
+    FirebaseFirestore.instance.collection('user_users').snapshots().listen((QuerySnapshot snapshot) {
       setState(() {
-        numberOfEntries = snapshot.size;
+        numberOfCustomerEntries = snapshot.size;
+      });
+    });
+    FirebaseFirestore.instance.collection('worker_users').snapshots().listen((QuerySnapshot snapshot) {
+      setState(() {
+        numberOfWorkerEntries = snapshot.size;
       });
     });
     FirebaseFirestore.instance.collection('service_booking').snapshots().listen((QuerySnapshot snapshot) {
@@ -41,8 +47,6 @@ class _AdminDashboardDistrictState extends State<AdminDashboardDistrict> {
   @override
   void initState() {
     super.initState();
-    numberOfEntries = 0;
-    numberOfOrders = 0;
     _chartData = [];
     _generateChartData();
     getSize();
@@ -278,8 +282,8 @@ class _AdminDashboardDistrictState extends State<AdminDashboardDistrict> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildCard(title: 'Users', value: numberOfEntries.toString()),
-                _buildCard(title: 'Employees', value: numberOfEntries.toString()),
+                _buildCard(title: 'Users', value: numberOfCustomerEntries.toString()),
+                _buildCard(title: 'Employees', value: numberOfWorkerEntries.toString()),
                 _buildCard(title: 'Orders', value: numberOfOrders.toString()),
               ],
             ),
